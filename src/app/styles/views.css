@@ -1,0 +1,43 @@
+/* src/app/styles/views.css */
+.view-transition {
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.view-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.view-transition-exit {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Estilos específicos para la vista grid */
+.view-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Estilos para la vista lista */
+.view-list {
+  width: 100%;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .view-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .view-grid {
+    grid-template-columns: 1fr;
+  }
+}

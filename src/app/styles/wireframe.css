@@ -1,0 +1,44 @@
+.wireframe-svg {
+  .section-bg {
+    fill: #F8FAFC;
+    stroke: #E2E8F0;
+    stroke-width: 1;
+  }
+
+  .header-bg { fill: #EFF6FF; }
+  .hero-bg { fill: #F3E8FF; }
+  .content-bg { fill: #ECFDF5; }
+  .footer-bg { fill: #F1F5F9; }
+
+  .element {
+    fill: white;
+    stroke: #94A3B8;
+    stroke-width: 1;
+    transition: all 0.2s;
+
+    &:hover {
+      stroke: #3B82F6;
+      stroke-width: 2;
+    }
+
+    &.nav { fill: #DBEAFE; }
+    &.cta { fill: #FEF3C7; }
+    &.image { fill: #D1FAE5; }
+    &.text { fill: #F3F4F6; }
+    &.form { fill: #FEE2E2; }
+  }
+  @keyframes slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+}
