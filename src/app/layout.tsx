@@ -1,11 +1,17 @@
-// src/app/layout.tsx
-import type { Metadata } from 'next';
-import { AuthProvider } from '@/app/core/auth/context/AuthContext';
+import type { Metadata, Viewport } from 'next';
+import { AppProviders } from '@/app/shared/components/providers/AppProviders';
+import { ToastViewport } from '@/app/shared/components/ui/toast';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Daru App',
-  description: 'Sistema de gestión de pedidos',
+  title: 'DARU - Asistente de Gestión Creativa',
+  description: 'Plataforma de gestión de proyectos creativos con IA',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#3B82F6',
 };
 
 export default function RootLayout({
@@ -14,11 +20,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
-      <body>
-        <AuthProvider>
+    <html lang="es" suppressHydrationWarning>
+      <body className="min-h-screen bg-background font-sans antialiased">
+        <AppProviders>
           {children}
-        </AuthProvider>
+          <ToastViewport />
+        </AppProviders>
       </body>
     </html>
   );

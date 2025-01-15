@@ -7,8 +7,8 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { auth } from '@/app/lib/firebase';
 import { useAuth } from '@/app/core/auth/context/AuthContext';
-import Button from '@/app/components/ui/Button';
-import Input from '@/app/components/ui/Input';
+import Button from '@/app/shared/components/ui/Button';
+import Input from '@/app/shared/components/ui/Input';
 
 export default function RegisterPage() {
   const router = useRouter();

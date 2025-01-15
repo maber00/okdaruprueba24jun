@@ -1,26 +1,31 @@
-// src/middleware.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+// middleware.ts
+import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
- const token = request.cookies.get('auth-token');
- const isAuthPage = request.nextUrl.pathname.startsWith('/auth');
- const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard');
+  const { pathname } = request.nextUrl;
 
- // Si no hay token y está intentando acceder al dashboard
- if (!token && isDashboardPage) {
-   return NextResponse.redirect(new URL('/auth/login', request.url));
- }
+  // Redirigir `/login` a `/auth/login`
+  if (pathname === '/login') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/auth/login';
+    return NextResponse.redirect(url);
+  }
 
- // Si hay token y está intentando acceder a páginas de auth
- if (token && isAuthPage) {
-   return NextResponse.redirect(new URL('/dashboard', request.url));
- }
+  // Redirigir `/register` a `/auth/register`
+  if (pathname === '/register') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/auth/register';
+    return NextResponse.redirect(url);
+  }
 
- return NextResponse.next();
+  // Continuar con el resto de las rutas
+  return NextResponse.next();
 }
 
-// Configurar las rutas que queremos proteger
 export const config = {
- matcher: ['/dashboard/:path*', '/auth/:path*']
+  matcher: [
+    '/login',
+    '/register',
+    '/(dashboard)/:path*'  // Proteger todas las rutas del dashboard
+  ]
 };

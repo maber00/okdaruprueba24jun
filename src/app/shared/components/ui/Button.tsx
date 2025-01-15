@@ -1,4 +1,4 @@
-// src/app/components/ui/Button.tsx
+// src/app/shared/components/ui/Button.tsx
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

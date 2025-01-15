@@ -1,4 +1,4 @@
-// src/app/lib/firebase.ts
+// src/app/lib/firebase/index.ts
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';

@@ -1,4 +1,4 @@
-// src/app/components/ui/ViewContainer.tsx
+// src/app/shared/components/ui/ViewContainer.tsx
 import { ReactNode } from 'react';
 
 interface ViewContainerProps {

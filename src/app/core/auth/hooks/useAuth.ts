@@ -1,85 +1,141 @@
 // src/app/core/auth/hooks/useAuth.ts
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { authService } from '../services/authService';
+import { auth } from '@/app/lib/firebase';
 import type { UserRole, Permission } from '@/app/types/auth';
+import { authLogger } from '@/app/lib/logger';
+
+// Constantes para rutas
+const AUTH_ROUTES = {
+  LOGIN: '/auth/login',
+  DASHBOARD: '/dashboard',
+  REGISTER: '/auth/register'
+} as const;
 
 export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
+    authLogger.error('useAuth', 'Hook usado fuera de AuthProvider');
     throw new Error('useAuth debe ser usado dentro de un AuthProvider');
   }
 
   const { user, loading, firebaseUser } = context;
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
+    authLogger.info('useAuth', 'Iniciando proceso de login', { email });
     try {
-      return await authService.login(email, password);
+      const result = await authService.login(email, password);
+      authLogger.info('useAuth', 'Login exitoso', { uid: result.user.uid });
+      return result;
     } catch (error) {
-      console.error('Error en login:', error);
+      authLogger.error('useAuth', 'Error en login', error);
       throw error;
     }
-  };
+  }, []);
 
-  const register = async (email: string, password: string, displayName: string) => {
+  const register = useCallback(async (email: string, password: string, displayName: string) => {
+    authLogger.info('useAuth', 'Iniciando registro de usuario', { email, displayName });
     try {
-      return await authService.register(email, password, displayName);
+      const result = await authService.register(email, password, displayName);
+      authLogger.info('useAuth', 'Registro exitoso', { uid: result.uid });
+      return result;
     } catch (error) {
-      console.error('Error en registro:', error);
+      authLogger.error('useAuth', 'Error en registro', error);
       throw error;
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
+    authLogger.info('useAuth', 'Iniciando proceso de logout');
     try {
-      await authService.logout();
+      // Guardar el UID antes del signOut para logging
+      const currentUid = auth.currentUser?.uid;
+      
+      // 1. Logout en Firebase
+      await auth.signOut();
+      authLogger.info('useAuth', 'Logout exitoso', { uid: currentUid });
+      
+      // 2. Limpiar cualquier dato local si es necesario
+      // ... limpieza de datos locales si los hay ...
+      
+      // 3. Redireccionar usando replace para evitar historial
+      authLogger.info('useAuth', `Redirigiendo a ${AUTH_ROUTES.LOGIN}`);
+      window.location.replace(AUTH_ROUTES.LOGIN);
+      
     } catch (error) {
-      console.error('Error en logout:', error);
+      authLogger.error('useAuth', 'Error en proceso de logout', error);
       throw error;
     }
-  };
+  }, []);
 
-  const resetPassword = async (email: string) => {
+  const resetPassword = useCallback(async (email: string) => {
+    authLogger.info('useAuth', 'Iniciando reset de password', { email });
     try {
       await authService.resetPassword(email);
+      authLogger.info('useAuth', 'Reset de password completado');
     } catch (error) {
-      console.error('Error en reset password:', error);
+      authLogger.error('useAuth', 'Error en reset password', error);
       throw error;
     }
-  };
+  }, []);
 
-  const hasPermission = (permission: Permission): boolean => {
-    if (!user) return false;
-    return user.permissions?.includes(permission) || false;
-  };
+  const hasPermission = useCallback((permission: Permission): boolean => {
+    if (!user) {
+      authLogger.info('useAuth', 'Verificación de permiso fallida - No hay usuario');
+      return false;
+    }
+    const hasPermission = user.permissions?.includes(permission) || false;
+    authLogger.info('useAuth', `Verificación de permiso: ${permission}`, { result: hasPermission });
+    return hasPermission;
+  }, [user]);
 
-  const hasRole = (roles: UserRole | UserRole[]): boolean => {
-    if (!user) return false;
+  const hasRole = useCallback((roles: UserRole | UserRole[]): boolean => {
+    if (!user) {
+      authLogger.info('useAuth', 'Verificación de rol fallida - No hay usuario');
+      return false;
+    }
     const roleArray = Array.isArray(roles) ? roles : [roles];
-    return roleArray.includes(user.role);
-  };
+    const hasRole = roleArray.includes(user.role);
+    authLogger.info('useAuth', 'Verificación de rol', { roles: roleArray, result: hasRole });
+    return hasRole;
+  }, [user]);
 
-  const updateProfile = async (data: { displayName?: string; photoURL?: string }) => {
-    if (!firebaseUser) throw new Error('No hay usuario autenticado');
-    try {
-      await authService.updateUserProfile(firebaseUser, data);
-    } catch (error) {
-      console.error('Error actualizando perfil:', error);
+  const updateProfile = useCallback(async (data: { displayName?: string; photoURL?: string }) => {
+    if (!firebaseUser) {
+      const error = new Error('No hay usuario autenticado');
+      authLogger.error('useAuth', 'Intento de actualizar perfil sin usuario autenticado', error);
       throw error;
     }
-  };
+    
+    try {
+      authLogger.info('useAuth', 'Iniciando actualización de perfil', data);
+      await authService.updateUserProfile(firebaseUser, data);
+      authLogger.info('useAuth', 'Perfil actualizado exitosamente');
+    } catch (error) {
+      authLogger.error('useAuth', 'Error actualizando perfil', error);
+      throw error;
+    }
+  }, [firebaseUser]);
 
   return {
+    // Estado
     user,
     loading,
+    isAuthenticated: !!user,
+    
+    // Métodos de autenticación
     login,
-    logout,
     register,
+    logout,
     resetPassword,
+    
+    // Métodos de autorización
     hasPermission,
     hasRole,
-    updateProfile,
-    isAuthenticated: !!user,
+    
+    // Métodos de perfil
+    updateProfile
   };
 }

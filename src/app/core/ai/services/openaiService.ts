@@ -1,3 +1,4 @@
+// src/app/core/ai/services/analysisService.ts
 import OpenAI from 'openai';
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 

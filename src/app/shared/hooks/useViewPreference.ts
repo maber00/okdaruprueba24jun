@@ -1,4 +1,4 @@
-// src/app/hooks/useViewPreference.ts
+// src/app/shared/hooks/useViewPreference.ts
 import { useState, useEffect } from 'react';
 
 type ViewType = 'list' | 'grid';

@@ -1,4 +1,4 @@
-// src/app/dashboard/page.tsx
+// src/app/(dashboard)/dashboard/page.tsx
 'use client';
 import { useState } from 'react';
 import { useAuth } from '@/app/core/auth/hooks/useAuth';

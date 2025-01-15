@@ -3,5 +3,5 @@ import { redirect } from 'next/navigation';
 
 
 export default function Home() {
-  redirect('/dashboard/orders');
+  redirect('/orders');  // O la ruta que prefieras como default
 }

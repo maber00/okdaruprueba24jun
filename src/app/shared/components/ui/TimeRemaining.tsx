@@ -1,4 +1,4 @@
-// src/app/components/ui/TimeRemaining.tsx
+// src/app/shared/components/ui/TimeRemaining.tsx
 'use client';
 import { useMemo } from 'react';
 import { Clock, AlertCircle } from 'lucide-react';

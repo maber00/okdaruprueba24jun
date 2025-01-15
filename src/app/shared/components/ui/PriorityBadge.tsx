@@ -1,4 +1,4 @@
-// src/app/components/ui/PriorityBadge.tsx
+//src/app/shared/components/ui/PriorityBadge.tsx
 'use client';
 import { Flame } from 'lucide-react';
 

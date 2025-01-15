@@ -1,3 +1,4 @@
+// src/app/api/openai/brief/route.ts
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import type { BriefData, ProjectType } from '@/app/types/brief';

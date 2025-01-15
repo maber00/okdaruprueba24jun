@@ -8,7 +8,7 @@ import TimeRemaining from '@/app/shared/components/ui/TimeRemaining';
 import PriorityBadge  from '@/app/shared/components/ui/PriorityBadge';
 import { PermissionGate } from '@/app/core/auth/components/PermissionGate';
 import { RoleGate } from '@/app/core/auth/components/RoleGate';
-import { useAuth } from '@/app/core/auth/context/AuthContext';
+import { useAuth } from '@/app/core/auth/hooks/useAuth';  // Actualizar esta línea
 import { FirebaseError } from 'firebase/app';
 import { 
   Brain, 

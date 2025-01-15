@@ -1,4 +1,4 @@
-// src/app/components/analysis/ProjectAnalysisPanel.tsx
+//src/app/core/ai/analysis/components/ProjectAnalysisPanel.tsx
 import type { ProjectAnalysis } from '@/app/types/project';
 
 interface ProjectAnalysisPanelProps {

@@ -1,8 +1,13 @@
-// src/app/components/analysis/BriefPanel.tsx
+// src/app/core/ai/analysis/components/BriefPanel.tsx
 'use client';
 import React from 'react';
-import { type BriefPanelProps } from '@/app/types/brief';
 import { Edit2, Check, File, Image as ImageIcon, Video } from 'lucide-react';
+import { 
+  type BriefPanelProps, 
+  type BriefReference, 
+  type BriefSection,
+  type BriefItem 
+} from '@/app/types/brief';
 
 export default function BriefPanel({ data, onEdit, onConfirm }: BriefPanelProps) {
   const getFileIcon = (type: string) => {
@@ -37,7 +42,7 @@ export default function BriefPanel({ data, onEdit, onConfirm }: BriefPanelProps)
         </div>
 
         {/* Secciones del Brief */}
-        {data.sections.map((section, sectionIndex) => (
+        {data.sections.map((section: BriefSection, sectionIndex: number) => (
           <div key={section.title} className="bg-white rounded-lg p-6 shadow-sm">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">{section.title}</h3>
@@ -52,7 +57,7 @@ export default function BriefPanel({ data, onEdit, onConfirm }: BriefPanelProps)
             </div>
             
             <div className="space-y-4">
-              {section.items.map((item, itemIndex) => (
+              {section.items.map((item: BriefItem, itemIndex: number) => (
                 <div key={itemIndex} className="bg-gray-50 p-4 rounded-lg">
                   <p className="font-medium text-gray-700">{item.label}</p>
                   <p className="mt-1 text-gray-600">{item.value}</p>
@@ -67,7 +72,7 @@ export default function BriefPanel({ data, onEdit, onConfirm }: BriefPanelProps)
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <h3 className="text-lg font-semibold mb-4">Referencias</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {data.references.map((ref, index) => (
+              {data.references.map((ref: BriefReference, index: number) => (
                 <div key={index} className="bg-gray-50 p-4 rounded-lg flex items-start gap-3">
                   {getFileIcon(ref.type)}
                   <div>

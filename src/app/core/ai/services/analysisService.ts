@@ -1,3 +1,4 @@
+// src/app/core/ai/services/analysisService.ts
 import type { ProjectAnalysis } from '@/app/types/project';
 import type { BriefData, ProjectType } from '@/app/types/brief';
 import openAIService, { type ChatMessage } from './openaiService';

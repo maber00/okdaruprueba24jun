@@ -1,4 +1,4 @@
-// src/app/components/summary/BriefSummary.tsx
+// src/app/core/ai/analysis/components/BriefSummary.tsx
 'use client';
 import React from 'react';
 import { Check, AlertCircle } from 'lucide-react';

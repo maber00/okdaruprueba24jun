@@ -1,5 +1,3 @@
-// src/app/feature/auth/login/page.tsx
-'use client';
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,9 +5,12 @@ import Link from 'next/link';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { auth } from '@/app/lib/firebase';
-import { useAuth } from '@/app/core/auth/hooks/useAuth';  // Actualizar esta línea
+import { useAuth } from '@/app/core/auth/hooks/useAuth';
 import Button from '@/app/shared/components/ui/Button';
 import Input from '@/app/shared/components/ui/Input';
+import { authLogger } from '@/app/lib/logger';
+
+const REDIRECT_URL = '/dashboard';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,8 +19,14 @@ export default function LoginPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    authLogger.info('LoginPage', 'Comprobando estado de autenticación', { isAuthenticated: !!user });
+
     if (user) {
-      router.push('/dashboard');
+      authLogger.info('LoginPage', 'Redirigiendo usuario autenticado', {
+        destination: REDIRECT_URL,
+        userId: user.uid
+      });
+      router.replace(REDIRECT_URL);
     }
   }, [user, router]);
 
@@ -32,18 +39,31 @@ export default function LoginPage() {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
+    authLogger.info('LoginPage', 'Intento de login', { email });
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push('/dashboard');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      authLogger.info('LoginPage', 'Login exitoso', { 
+        userId: userCredential.user.uid 
+      });
+
     } catch (err) {
+      authLogger.error('LoginPage', 'Error en login', err);
+      
       if (err instanceof FirebaseError) {
         switch (err.code) {
           case 'auth/user-not-found':
           case 'auth/wrong-password':
             setError('Email o contraseña incorrectos');
             break;
+          case 'auth/too-many-requests':
+            setError('Demasiados intentos fallidos. Por favor, intenta más tarde');
+            break;
+          case 'auth/user-disabled':
+            setError('Esta cuenta ha sido deshabilitada');
+            break;
           default:
-            setError('Ocurrió un error al iniciar sesión');
+            setError('Error al iniciar sesión. Por favor, intenta nuevamente');
         }
       }
     } finally {
@@ -51,7 +71,7 @@ export default function LoginPage() {
     }
   };
 
-  // Si está cargando o ya está autenticado, mostramos un loader
+  // Si el usuario está autenticado, mostramos el loader
   if (user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -109,7 +129,10 @@ export default function LoginPage() {
           </Button>
 
           <div className="text-center">
-            <Link href="/auth/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
+            <Link 
+              href="/auth/forgot-password" 
+              className="text-sm text-blue-600 hover:text-blue-500"
+            >
               ¿Olvidaste tu contraseña?
             </Link>
           </div>

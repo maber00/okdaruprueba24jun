@@ -1,4 +1,4 @@
-// src/app/lib/storage.ts
+// src/app/lib/firebase/storage.ts
 import { storage } from '@/app/lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
