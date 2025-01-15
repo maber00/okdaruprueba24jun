@@ -22,6 +22,12 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
+export function withRoleCheck(allowedRoles: UserRole[]) {
+  return async (req: NextRequest) => {
+    // Verificar rol del usuario
+  }
+}
+
 export const config = {
   matcher: [
     '/login',
