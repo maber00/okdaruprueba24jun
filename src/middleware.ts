@@ -1,37 +1,46 @@
-// middleware.ts
-import { NextRequest, NextResponse } from 'next/server';
+// src/middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { authLogger } from '@/app/lib/logger';
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export async function middleware(request: NextRequest) {
+  try {
+    // Permitir rutas públicas
+    if (
+      request.nextUrl.pathname.startsWith('/auth') ||
+      request.nextUrl.pathname.startsWith('/_next') ||
+      request.nextUrl.pathname.startsWith('/api/auth') ||
+      request.nextUrl.pathname === '/'
+    ) {
+      return NextResponse.next();
+    }
 
-  // Redirigir `/login` a `/auth/login`
-  if (pathname === '/login') {
-    const url = request.nextUrl.clone();
-    url.pathname = '/auth/login';
-    return NextResponse.redirect(url);
-  }
+    // Obtener el token de Firebase de las cookies
+    const authToken = request.cookies.get('firebase-token');
 
-  // Redirigir `/register` a `/auth/register`
-  if (pathname === '/register') {
-    const url = request.nextUrl.clone();
-    url.pathname = '/auth/register';
-    return NextResponse.redirect(url);
-  }
+    if (!authToken) {
+      authLogger.warn('middleware', 'No auth token found');
+      return NextResponse.redirect(new URL('/auth/login', request.url));
+    }
 
-  // Continuar con el resto de las rutas
-  return NextResponse.next();
-}
-
-export function withRoleCheck(allowedRoles: UserRole[]) {
-  return async (req: NextRequest) => {
-    // Verificar rol del usuario
+    // Las rutas protegidas son manejadas por el AuthContext
+    return NextResponse.next();
+  } catch (middlewareError) {
+    authLogger.error('middleware', 'Error in middleware', middlewareError);
+    return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 }
 
 export const config = {
   matcher: [
-    '/login',
-    '/register',
-    '/(dashboard)/:path*'  // Proteger todas las rutas del dashboard
-  ]
+    /*
+     * Match all request paths except for the ones starting with:
+     * - auth (auth routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!auth|_next/static|_next/image|favicon.ico).*)',
+  ],
 };

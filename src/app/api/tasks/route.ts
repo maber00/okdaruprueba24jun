@@ -1,32 +1,48 @@
 // src/app/api/tasks/route.ts
 import { NextResponse } from 'next/server';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '@/app/lib/firebase';
+import { taskService } from '@/app/services/taskService';
+import { authLogger } from '@/app/lib/logger';
 
 export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    try {
+        const { searchParams } = new URL(request.url);
+        const userId = searchParams.get('userId');
+        
+        authLogger.info('TasksAPI', 'Iniciando GET /api/tasks', { userId });
+
+        if (!userId) {
+            authLogger.warn('TasksAPI', 'UserId no proporcionado');
+            return NextResponse.json(
+                { error: 'UserId is required' },
+                { status: 400 }
+            );
+        }
+
+        const tasks = await taskService.getUserTasks(userId);
+        
+        authLogger.info('TasksAPI', 'Tareas obtenidas exitosamente', {
+            count: tasks.length
+        });
+
+        return NextResponse.json(tasks);
+
+    } catch (error) {
+        authLogger.error('TasksAPI', 'Error procesando solicitud', error);
+        
+        // Determinar el tipo de error para una mejor respuesta
+        if (error instanceof Error) {
+            return NextResponse.json(
+                { 
+                    error: error.message,
+                    stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+                },
+                { status: 500 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: 'An unexpected error occurred' },
+            { status: 500 }
+        );
     }
-
-    const tasksRef = collection(db, 'tasks');
-    const q = query(tasksRef, where('assignedTo', '==', userId));
-    const querySnapshot = await getDocs(q);
-
-    const tasks = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-
-    return NextResponse.json(tasks);
-  } catch (error) {
-    console.error('Error fetching tasks:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch tasks' }, 
-      { status: 500 }
-    );
-  }
 }

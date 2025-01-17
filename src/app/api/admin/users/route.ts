@@ -7,13 +7,22 @@ import type { UserRole } from '@/app/types/auth';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    
+    // Manejar correctamente los tipos null
+    const roleParam = searchParams.get('role');
+    const statusParam = searchParams.get('status');
+    const searchParam = searchParams.get('search');
+    const sortByParam = searchParams.get('sortBy');
+    const sortDirectionParam = searchParams.get('sortDirection');
+
     const filters: UserFilters = {
-      role: searchParams.get('role') as UserRole,
-      status: searchParams.get('status') as AdminUser['status'],
-      searchTerm: searchParams.get('search'),
-      sortBy: searchParams.get('sortBy') as keyof AdminUser,
-      sortDirection: searchParams.get('sortDirection') as 'asc' | 'desc'
+      role: roleParam as UserRole || undefined,
+      status: statusParam as AdminUser['status'] || undefined,
+      searchTerm: searchParam || undefined,
+      sortBy: sortByParam as keyof AdminUser || undefined,
+      sortDirection: (sortDirectionParam as 'asc' | 'desc') || undefined
     };
+
     const page = parseInt(searchParams.get('page') || '1');
 
     const result = await adminService.getUsers(filters, page);

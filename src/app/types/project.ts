@@ -1,62 +1,89 @@
 // src/app/types/project.ts
-export type ProjectType = 
-  | 'design' 
-  | 'video' 
-  | 'animation' 
-  | 'web_design'
-  | 'web_development';
-
 export type ProjectStatus = 
-  | 'open'
-  | 'in_progress'
+  | 'draft'
+  | 'briefing'
   | 'review'
+  | 'approved'
+  | 'in_progress'
+  | 'client_review'
+  | 'revisions'
   | 'completed'
   | 'cancelled';
 
+export type ProjectType = 
+  | 'design'
+  | 'video'
+  | 'animation'
+  | 'web_design'
+  | 'web_development';
 
-  export interface ProjectAnalysis {
-    status: 'ready' | 'pending';
-    priority: 'high' | 'medium' | 'low';
-    requirements: string[];
-    recommendations: string[];
-    assignedTo?: string;
-  }
+export interface ProjectMember {
+  id: string;
+  userId: string;
+  role: 'project_manager' | 'designer' | 'client';
+  joinedAt: string;
+  permissions: string[];
+}
+
+export interface ProjectTimeline {
+  id: string;
+  projectId: string;
+  status: ProjectStatus;
+  updatedBy: string;
+  comment?: string;
+  timestamp: string;
+}
+
+export interface ProjectDeliverable {
+  id: string;
+  name: string;
+  description: string;
+  status: 'pending' | 'in_progress' | 'completed';
+  dueDate: string;
+  assignedTo: string;
+  attachments: string[];
+  feedback?: string[];
+}
+
+export interface BriefContent {
+  objectives: string[];
+  targetAudience: string;
+  requirements: string[];
+  brandGuidelines: string;
+  references: string[];
+  technicalSpecs: Record<string, string>;
+  additionalNotes?: string;
+}
 
 export interface Project {
   id: string;
-  title: string;
-  client: {
-    name: string;
-    company: string;
-    email: string;
-  };
+  name: string;
   type: ProjectType;
   status: ProjectStatus;
-  assignedTo: string[];
-  dueDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  brief: string;
-  aiSuggestions?: string[];
-  attachments?: string[];
-}
-
-// src/app/types/stats.ts
-export interface DashboardStats {
-  projects: {
-    total: number;
-    active: number;
-    completed: number;
-    byType: Record<ProjectType, number>;
+  description: string;
+  clientId: string;
+  managerId?: string;
+  brief: {
+    approved: boolean;
+    content: BriefContent;
+    updatedAt: string;
   };
-  revenue: {
-    monthly: number;
-    yearly: number;
-    growth: number;
-  };
-  clients: {
-    total: number;
-    active: number;
-    new: number;
+  team: ProjectMember[];
+  timeline: ProjectTimeline[];
+  deliverables: ProjectDeliverable[];
+  startDate: string;
+  dueDate: string;
+  completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  metadata?: {
+    priority: 'low' | 'medium' | 'high';
+    tags: string[];
+    budget?: number;
+    aiAnalysis?: {
+      complexity: 'low' | 'medium' | 'high';
+      recommendations: string[];
+      lastAnalyzed: string;
+    };
   };
 }

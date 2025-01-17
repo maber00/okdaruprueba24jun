@@ -27,8 +27,11 @@ const menuItems = [
     title: 'Proyectos',
     icon: FolderOpen,
     href: '/dashboard/projects',
-  },
-  {
+  },{
+    title: 'Planificador',
+    icon: FolderOpen,
+    href: '/dashboard/schedule',
+  }, {
     title: 'Clientes',
     icon: Users,
     href: '/dashboard/clients',

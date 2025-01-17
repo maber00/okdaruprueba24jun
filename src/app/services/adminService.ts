@@ -9,7 +9,8 @@ import {
     where,
     orderBy,
     limit,
-    startAfter
+    startAfter,
+    type QueryConstraint
   } from 'firebase/firestore';
   import { db } from '@/app/lib/firebase';
   import type { AdminUser, UserFilters, UserStats } from '@/app/types/admin';
@@ -26,7 +27,7 @@ import {
       hasMore: boolean;
     }> {
       try {
-        let queryConstraints = [];
+        const queryConstraints: QueryConstraint[] = [];
   
         // Aplicar filtros
         if (filters.role) {
@@ -39,6 +40,9 @@ import {
   
         if (filters.sortBy) {
           queryConstraints.push(orderBy(filters.sortBy, filters.sortDirection || 'asc'));
+        } else {
+          // Orden por defecto
+          queryConstraints.push(orderBy('createdAt', 'desc'));
         }
   
         // Paginación
@@ -60,7 +64,8 @@ import {
         })) as AdminUser[];
   
         // Obtener total de usuarios para el filtro actual
-        const totalSnapshot = await getDocs(query(this.usersCollection, ...queryConstraints.slice(0, -2)));
+        const totalQuery = query(this.usersCollection, ...queryConstraints.slice(0, -2));
+        const totalSnapshot = await getDocs(totalQuery);
         const total = totalSnapshot.size;
   
         return {

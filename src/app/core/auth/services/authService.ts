@@ -152,5 +152,20 @@ export const authService = {
       authLogger.error('AuthService', 'Error recuperando sesión', error);
       throw error;
     }
+  },
+  async getIdToken(): Promise<string | null> {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        authLogger.info('AuthService', 'No hay usuario para obtener token');
+        return null;
+      }
+  
+      const token = await currentUser.getIdToken();
+      return token;
+    } catch (error) {
+      authLogger.error('AuthService', 'Error obteniendo token', error);
+      return null;
+    }
   }
 };

@@ -11,7 +11,7 @@ import {
   } from 'lucide-react';
   
 import type { ServiceType, OrderStatus, Order } from '@/app/types/order';
-import { generateFileId, uploadMultipleFiles } from '@/app/lib/storage';
+import { generateFileId, uploadMultipleFiles } from '@/app/lib/firebase/storage';
 
 import { db } from '@/app/lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';

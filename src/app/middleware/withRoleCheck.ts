@@ -2,19 +2,32 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import type { UserRole } from '@/app/types/auth';
-import { auth } from '@/app/lib/firebase';
 
 export function withRoleCheck(allowedRoles: UserRole[]) {
   return async function middleware(request: NextRequest) {
     try {
-      const session = await auth.currentUser;
-      
-      if (!session) {
+      const token = request.cookies.get('session')?.value;
+
+      if (!token) {
         return NextResponse.redirect(new URL('/auth/login', request.url));
       }
 
-      const userDoc = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${session.uid}`);
-      const userData = await userDoc.json();
+      // Verificar token a través de la API
+      const verifyResponse = await fetch(`${request.nextUrl.origin}/api/auth/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+
+      if (!verifyResponse.ok) {
+        return NextResponse.redirect(new URL('/auth/login', request.url));
+      }
+
+      const { uid } = await verifyResponse.json();
+
+      // Obtener rol del usuario
+      const userResponse = await fetch(`${request.nextUrl.origin}/api/users/${uid}`);
+      const userData = await userResponse.json();
 
       if (!userData || !allowedRoles.includes(userData.role)) {
         return NextResponse.redirect(new URL('/dashboard', request.url));

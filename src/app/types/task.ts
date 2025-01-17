@@ -22,15 +22,22 @@ export interface Attachment {
 
 export interface Task {
   id: string;
+  projectId: string;
   name: string;
   description: string;
   status: TaskStatus;
   priority: TaskPriority;
   startTime: string;
   endTime: string;
-  assignedTo: string;
-  comments: Comment[];
-  attachments: Attachment[];
+  assignedTo: string[];
+  createdBy: string;
   createdAt: string;
   updatedAt: string;
+  attachments?: Attachment[];  // Añadido
+  comments?: Comment[];        // Añadido
+  metadata?: {
+    estimatedHours?: number;
+    actualHours?: number;
+    dependencies?: string[];
+  }
 }

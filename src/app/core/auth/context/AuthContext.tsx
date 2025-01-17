@@ -29,13 +29,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     authLogger.info('AuthProvider', 'Iniciando setup de auth listener');
     let unsubscribeUser: (() => void) | undefined;
-
+  
     const unsubscribeAuth = onAuthStateChanged(auth, async (fbUser) => {
       try {
         authLogger.info('AuthProvider', 'Cambio en estado de autenticación', 
           fbUser ? `Usuario: ${fbUser.uid}` : 'Usuario: null');
-
+  
         if (fbUser) {
+          // Obtener y guardar el token
+          const token = await fbUser.getIdToken();
+          document.cookie = `firebase-token=${token}; path=/; max-age=3600; secure; samesite=strict`;
+          
           setFirebaseUser(fbUser);
           const userDocRef = doc(db, 'users', fbUser.uid);
           authLogger.info('AuthProvider', 'Verificando documento de usuario en Firestore');
@@ -69,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 unsubscribeUser();
                 authLogger.info('AuthProvider', 'Limpiando subscripción anterior');
               }
-
+  
               unsubscribeUser = onSnapshot(
                 userDocRef,
                 {
@@ -107,6 +111,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           // Usuario no autenticado
           authLogger.info('AuthProvider', 'Usuario no autenticado, limpiando estado');
+          // Limpiar la cookie al cerrar sesión
+          document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+          
           if (unsubscribeUser) {
             unsubscribeUser();
             unsubscribeUser = undefined;
@@ -122,7 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     });
-
+  
     return () => {
       authLogger.info('AuthProvider', 'Limpiando subscripciones de auth');
       if (unsubscribeUser) {
