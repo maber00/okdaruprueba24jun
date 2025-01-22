@@ -1,130 +1,190 @@
 // src/app/dashboard/projects/page.tsx
 'use client';
+
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/core/auth/hooks/useAuth';
-import { Card } from '@/app/shared/components/ui/card';
-import Button from '@/app/shared/components/ui/Button';
-import Input from '@/app/shared/components/ui/Input';
 import { ProjectCard } from './components/ProjectCard';
 import { projectService } from '@/app/services/projectService';
-import { Plus, Search, Filter, Grid as GridIcon, List, Calendar } from 'lucide-react';
-import type { Project } from '@/app/types/project';
+import Button from '@/app/shared/components/ui/Button';
+import Input from '@/app/shared/components/ui/Input';
+import { Card } from '@/app/shared/components/ui/card';
+import { 
+  Plus, 
+  Search, 
+  Grid as GridIcon, 
+  List, 
+  Brain 
+} from 'lucide-react';
+import type { Project, ProjectStatus } from '@/app/types/project';
+
+const statusFilters: { value: ProjectStatus; label: string }[] = [
+  { value: 'inquiry', label: 'Consulta' },
+  { value: 'draft', label: 'Borrador' },
+  { value: 'briefing', label: 'Resumen' },
+  { value: 'review', label: 'Revisión' },
+  { value: 'approved', label: 'Aprobado' },
+  { value: 'in_progress', label: 'En progreso' },
+  { value: 'client_review', label: 'Revisión del cliente' },
+  { value: 'revisions', label: 'Revisiones' },
+  { value: 'completed', label: 'Completado' },
+  { value: 'cancelled', label: 'Cancelado' },
+];
+
+export interface ProjectCardProps {
+  project: Project;
+  onClick: () => void;
+  viewMode: 'grid' | 'list';
+}
 
 export default function ProjectsPage() {
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const { user } = useAuth();
+  const router = useRouter();
+  const { user } = useAuth();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | 'all'>('all');
+  
 
-    useEffect(() => {
-        const loadProjects = async () => {
-            if (!user) {
-                setIsLoading(false);
-                return;
-            }
+  useEffect(() => {
+    const loadProjects = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
 
-            try {
-                setIsLoading(true);
-                setError(null);
-                const userProjects = await projectService.getUserProjects(user.uid);
-                setProjects(userProjects);
-            } catch (error) {
-                console.error('Error loading projects:', error);
-                setError('Error al cargar los proyectos. Por favor, intenta de nuevo.');
-            } finally {
-                setIsLoading(false);
-            }
-        };
+      try {
+        setIsLoading(true);
+        const userProjects = await projectService.getUserProjects(user.uid);
+        setProjects(userProjects);
+        setFilteredProjects(userProjects);
+      } catch (error) {
+        console.error('Error loading projects:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-        if (user) {
-            loadProjects();
-        }
-    }, [user]);
+    loadProjects();
+  }, [user]);
 
-    if (isLoading) {
-        return (
-            <div className="flex justify-center items-center h-full">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
-            </div>
-        );
+  // Filtrado de proyectos
+  useEffect(() => {
+    let filtered = [...projects];
+
+    // Filtrar por búsqueda
+    if (searchTerm) {
+      filtered = filtered.filter(project =>
+        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
 
-    if (error) {
-        return (
-            <div className="p-6">
-                <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
-                    {error}
-                </div>
-            </div>
-        );
+    // Filtrar por estado
+    if (selectedStatus !== 'all') {
+      filtered = filtered.filter(project => project.status === selectedStatus);
     }
 
+    setFilteredProjects(filtered);
+  }, [searchTerm, selectedStatus, projects]);
+
+  if (isLoading) {
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Proyectos</h1>
-                <Button onClick={() => console.log('Crear proyecto')}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Nuevo Proyecto
-                </Button>
-            </div>
-
-            <div className="flex gap-4">
-                <div className="flex-1">
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Search className="h-4 w-4 text-gray-400" />
-                        </div>
-                        <Input
-                            type="search"
-                            placeholder="Buscar proyectos..."
-                            className="pl-10 w-full"
-                        />
-                    </div>
-                </div>
-
-                <Button variant="outline">
-                    <Filter className="h-4 w-4 mr-2" />
-                    Filtros
-                </Button>
-
-                <div className="flex rounded-lg border">
-                    <button
-                        onClick={() => setViewMode('grid')}
-                        className={`p-2 ${viewMode === 'grid' ? 'bg-blue-50 text-blue-600' : 'text-gray-500'}`}
-                    >
-                        <GridIcon className="h-4 w-4" />
-                    </button>
-                    <button
-                        onClick={() => setViewMode('list')}
-                        className={`p-2 ${viewMode === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-500'}`}
-                    >
-                        <List className="h-4 w-4" />
-                    </button>
-                </div>
-            </div>
-
-            {projects.length === 0 ? (
-                <Card className="p-12 text-center">
-                    <h3 className="text-lg font-medium text-gray-900">No hay proyectos</h3>
-                    <p className="mt-2 text-sm text-gray-500">
-                        Comienza creando tu primer proyecto.
-                    </p>
-                    <div className="mt-6">
-                        <Button onClick={() => console.log('Crear proyecto')}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Crear Proyecto
-                        </Button>
-                    </div>
-                </Card>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {projects.map((project) => (
-                        <ProjectCard key={project.id} project={project} />
-                    ))}
-                </div>
-            )}
-        </div>
+      <div className="flex justify-center items-center h-full">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+      </div>
     );
+  }
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Proyectos</h1>
+        <Button onClick={() => router.push('/dashboard/projects/create')}>
+          <Plus className="h-4 w-4 mr-2" />
+          Nuevo Proyecto
+        </Button>
+      </div>
+
+      {/* Filtros */}
+      <div className="flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-[300px]">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="search"
+              placeholder="Buscar proyectos..."
+              className="pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <select
+            className="border rounded-lg px-4 py-2"
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value as ProjectStatus | 'all')}
+          >
+            <option value="all">Todos los estados</option>
+            {statusFilters.map(({ value, label }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+
+          <div className="flex rounded-lg border">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 ${viewMode === 'grid' ? 'bg-blue-50 text-blue-600' : 'text-gray-500'}`}
+            >
+              <GridIcon className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 ${viewMode === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-500'}`}
+            >
+              <List className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Lista de Proyectos */}
+      {filteredProjects.length === 0 ? (
+        <Card className="p-12 text-center">
+          <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">No hay proyectos</h3>
+          <p className="mt-2 text-sm text-gray-500">
+            Comienza creando un nuevo proyecto con DARU.
+          </p>
+          <div className="mt-6">
+            <Button onClick={() => router.push('/dashboard/projects/create')}>
+              <Plus className="h-4 w-4 mr-2" />
+              Crear Proyecto
+            </Button>
+          </div>
+        </Card>
+      ) : (
+        <div className={viewMode === 'grid' 
+          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+          : 'space-y-4'
+        }>
+          {filteredProjects.map((project) => (
+            <ProjectCard 
+              key={project.id} 
+              project={project}
+              viewMode={viewMode}
+              onClick={() => router.push(`/dashboard/projects/${project.id}`)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

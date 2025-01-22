@@ -8,6 +8,7 @@ import {
   } from 'firebase/auth';
   import { doc, setDoc } from 'firebase/firestore';
   import { auth, db } from './index';
+  
   import type { UserRole } from '@/app/types/auth';
   
   export async function signIn(email: string, password: string) {

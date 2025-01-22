@@ -1,10 +1,12 @@
+// src/app/core/auth/context/AuthContext.tsx
 'use client';
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { doc, onSnapshot, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/app/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { initializeFirebase, getFirebaseInstances } from '@/app/lib/firebase/init';
 import type { AuthUser } from '@/app/types/auth';
 import { authLogger } from '@/app/lib/logger';
+
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -20,6 +22,8 @@ export const AuthContext = createContext<AuthContextType>({
   error: null
 });
 
+
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
@@ -27,139 +31,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    authLogger.info('AuthProvider', 'Iniciando setup de auth listener');
-    let unsubscribeUser: (() => void) | undefined;
-  
-    const unsubscribeAuth = onAuthStateChanged(auth, async (fbUser) => {
+    const initializeAuth = async () => {
       try {
-        authLogger.info('AuthProvider', 'Cambio en estado de autenticación', 
-          fbUser ? `Usuario: ${fbUser.uid}` : 'Usuario: null');
-  
-        if (fbUser) {
-          // Obtener y guardar el token
-          const token = await fbUser.getIdToken();
-          document.cookie = `firebase-token=${token}; path=/; max-age=3600; secure; samesite=strict`;
-          
-          setFirebaseUser(fbUser);
-          const userDocRef = doc(db, 'users', fbUser.uid);
-          authLogger.info('AuthProvider', 'Verificando documento de usuario en Firestore');
-          
+        await initializeFirebase();
+        const { auth, db } = getFirebaseInstances();
+
+        const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
           try {
-            const userDocSnap = await getDoc(userDocRef);
-            
-            if (!userDocSnap.exists()) {
-              authLogger.info('AuthProvider', 'Creando nuevo documento de usuario');
-              const userData = {
-                email: fbUser.email,
-                displayName: fbUser.displayName,
-                role: 'client',
-                permissions: [],
-                createdAt: new Date()
-              };
+            setLoading(true);
+            authLogger.info('AuthProvider', 'Cambio en estado de autenticación', 
+              fbUser ? `Usuario: ${fbUser.uid}` : 'Usuario: null');
+
+            if (fbUser) {
+              setFirebaseUser(fbUser);
+              const userDocRef = doc(db, 'users', fbUser.uid);
               
-              await setDoc(userDocRef, userData);
-              authLogger.info('AuthProvider', 'Documento de usuario creado exitosamente');
-              setUser({
-                uid: fbUser.uid,
-                email: fbUser.email,
-                displayName: fbUser.displayName,
-                role: 'client',
-                permissions: []
-              });
-              setLoading(false);
-            } else {
-              authLogger.info('AuthProvider', 'Configurando listener de datos de usuario');
-              if (unsubscribeUser) {
-                unsubscribeUser();
-                authLogger.info('AuthProvider', 'Limpiando subscripción anterior');
+              const userDocSnap = await getDoc(userDocRef);
+              
+              if (!userDocSnap.exists()) {
+                const newUser: AuthUser = {
+                  uid: fbUser.uid,
+                  email: fbUser.email,
+                  displayName: fbUser.displayName,
+                  role: 'client',
+                  permissions: [],
+                  status: 'active',
+                  metadata: {},
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString()
+                };
+                
+                setUser(newUser);
+              } else {
+                setUser(userDocSnap.data() as AuthUser);
               }
-  
-              unsubscribeUser = onSnapshot(
-                userDocRef,
-                {
-                  next: (docSnap) => {
-                    if (docSnap.exists()) {
-                      const userData = docSnap.data();
-                      authLogger.info('AuthProvider', 'Datos de usuario actualizados', {
-                        uid: fbUser.uid,
-                        role: userData.role
-                      });
-                      setUser({
-                        uid: fbUser.uid,
-                        email: fbUser.email,
-                        displayName: fbUser.displayName,
-                        role: userData.role,
-                        permissions: userData.permissions || []
-                      });
-                    }
-                    setError(null);
-                    setLoading(false);
-                  },
-                  error: (error) => {
-                    authLogger.error('AuthProvider', 'Error en snapshot de usuario', error);
-                    setError('Error al sincronizar datos del usuario');
-                    setLoading(false);
-                  }
-                }
-              );
+              setError(null);
+            } else {
+              setFirebaseUser(null);
+              setUser(null);
+              setError(null);
             }
-          } catch (error) {
-            authLogger.error('AuthProvider', 'Error accediendo a Firestore', error);
-            setError('Error al acceder a la base de datos');
+          } catch (err) {
+            authLogger.error('AuthProvider', 'Error en autenticación', err);
+            setError('Error en autenticación');
+          } finally {
             setLoading(false);
           }
-        } else {
-          // Usuario no autenticado
-          authLogger.info('AuthProvider', 'Usuario no autenticado, limpiando estado');
-          // Limpiar la cookie al cerrar sesión
-          document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-          
-          if (unsubscribeUser) {
-            unsubscribeUser();
-            unsubscribeUser = undefined;
-          }
-          setFirebaseUser(null);
-          setUser(null);
-          setError(null);
-          setLoading(false);
-        }
-      } catch (error) {
-        authLogger.error('AuthProvider', 'Error en proceso de autenticación', error);
-        setError('Error en el proceso de autenticación');
+        });
+
+        return () => unsubscribe();
+      } catch (err) {
+        authLogger.error('AuthProvider', 'Error inicializando Firebase', err);
+        setError('Error inicializando autenticación');
         setLoading(false);
       }
-    });
-  
-    return () => {
-      authLogger.info('AuthProvider', 'Limpiando subscripciones de auth');
-      if (unsubscribeUser) {
-        unsubscribeUser();
-      }
-      unsubscribeAuth();
     };
+
+    initializeAuth();
   }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-red-50 border-l-4 border-red-500 p-4">
-          <div className="flex">
-            <div className="ml-3">
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <AuthContext.Provider value={{ user, firebaseUser, loading, error }}>
@@ -167,6 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
+
 
 export function useAuth() {
   const context = useContext(AuthContext);

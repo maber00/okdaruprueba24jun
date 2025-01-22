@@ -1,30 +1,41 @@
 // src/app/shared/hooks/useToast.ts
-import { useEffect } from "react";
-import { ToastService } from "../utils/toastService";
-import { ToastActionElement } from "../components/ui/toast";
+// src/app/shared/hooks/useToast.ts
+import { toast } from "@/app/shared/components/ui/toast";
+import type { ToastActionElement } from "@/app/shared/components/ui/toast";
 
-interface UseToastProps {
-  message: string;
+interface ToastOptions {
+  message: string;  // Cambiado de description a message
   action?: ToastActionElement;
   duration?: number;
 }
 
-export const useToast = ({ message, action, duration = 5000 }: UseToastProps) => {
-  useEffect(() => {
-    if (!message) return;
-
-    const toastId = ToastService.create({
-      message,
-      action,
-      duration,
+export function useToast() {
+  const showToast = (options: ToastOptions) => {
+    return toast({
+      description: options.message,  // Aquí hacemos la conversión de message a description
+      action: options.action,
+      duration: options.duration || 5000
     });
+  };
 
-    return () => {
-      ToastService.dismiss(toastId);
-    };
-  }, [message, action, duration]);
-};
+  const error = (message: string) => {  // Cambiado el parámetro a message
+    return showToast({
+      message
+    });
+  };
 
+  const success = (message: string) => {  // Cambiado el parámetro a message
+    return showToast({
+      message
+    });
+  };
+
+  return {
+    toast: showToast,
+    success,
+    error
+  };
+}
 
 // Ejemplo de uso:
 /*

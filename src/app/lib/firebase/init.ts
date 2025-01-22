@@ -9,12 +9,12 @@ import {
 } from 'firebase/auth';
 import { 
   getFirestore, 
-  connectFirestoreEmulator, 
+  connectFirestoreEmulator,
   type Firestore 
 } from 'firebase/firestore';
 import { 
   getStorage, 
-  connectStorageEmulator, 
+  connectStorageEmulator,
   type FirebaseStorage 
 } from 'firebase/storage';
 import { firebaseConfig } from './config';
@@ -62,6 +62,20 @@ export function initializeFirebase() {
     firebaseAuth = getAuth();
     firebaseDb = getFirestore();
     firebaseStorage = getStorage();
+  }
+
+  return {
+    app: firebaseApp,
+    auth: firebaseAuth,
+    db: firebaseDb,
+    storage: firebaseStorage
+  };
+}
+
+export function getFirebaseInstances() {
+  // Si las instancias no están inicializadas, inicializarlas
+  if (!firebaseApp) {
+    return initializeFirebase();
   }
 
   return {

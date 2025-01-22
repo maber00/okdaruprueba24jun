@@ -1,3 +1,4 @@
+// src/app/auth/login/page.tsx
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -8,77 +9,78 @@ import { auth } from '@/app/lib/firebase';
 import { useAuth } from '@/app/core/auth/hooks/useAuth';
 import Button from '@/app/shared/components/ui/Button';
 import Input from '@/app/shared/components/ui/Input';
-import { authLogger } from '@/app/lib/logger';
-
-const REDIRECT_URL = '/dashboard';
+import { useToast } from '@/app/shared/hooks/useToast';
 
 export default function LoginPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    authLogger.info('LoginPage', 'Comprobando estado de autenticación', { isAuthenticated: !!user });
-
     if (user) {
-      authLogger.info('LoginPage', 'Redirigiendo usuario autenticado', {
-        destination: REDIRECT_URL,
-        userId: user.uid
-      });
-      router.replace(REDIRECT_URL);
+      router.push('/dashboard');
     }
   }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    authLogger.info('LoginPage', 'Intento de login', { email });
-
+    
     try {
+      setIsLoading(true);
+      setError('');
+
+      const formData = new FormData(e.currentTarget);
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
+
+      if (!email || !password) {
+        setError('Por favor, ingresa tu email y contraseña');
+        return;
+      }
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      authLogger.info('LoginPage', 'Login exitoso', { 
-        userId: userCredential.user.uid 
-      });
+      
+      if (userCredential.user) {
+        toast({
+          message: 'Inicio de sesión exitoso'
+        });
+        router.push('/dashboard');
+      }
 
     } catch (err) {
-      authLogger.error('LoginPage', 'Error en login', err);
-      
+      let errorMessage = 'Error al iniciar sesión';
+
       if (err instanceof FirebaseError) {
         switch (err.code) {
+          case 'auth/invalid-email':
+            errorMessage = 'El correo electrónico no es válido';
+            break;
           case 'auth/user-not-found':
           case 'auth/wrong-password':
-            setError('Email o contraseña incorrectos');
+            errorMessage = 'Email o contraseña incorrectos';
             break;
           case 'auth/too-many-requests':
-            setError('Demasiados intentos fallidos. Por favor, intenta más tarde');
+            errorMessage = 'Demasiados intentos fallidos. Por favor, intenta más tarde';
             break;
           case 'auth/user-disabled':
-            setError('Esta cuenta ha sido deshabilitada');
+            errorMessage = 'Esta cuenta ha sido deshabilitada';
             break;
           default:
-            setError('Error al iniciar sesión. Por favor, intenta nuevamente');
+            errorMessage = 'Error al iniciar sesión. Por favor, intenta nuevamente';
         }
       }
+
+      setError(errorMessage);
+      toast({
+        message: errorMessage
+      });
+
     } finally {
       setIsLoading(false);
     }
   };
-
-  // Si el usuario está autenticado, mostramos el loader
-  if (user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -93,7 +95,11 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form 
+          className="mt-8 space-y-6" 
+          onSubmit={handleSubmit}
+          noValidate
+        >
           <div className="space-y-4">
             <Input
               label="Email"
@@ -102,6 +108,7 @@ export default function LoginPage() {
               autoComplete="email"
               required
               placeholder="tu@email.com"
+              disabled={isLoading}
             />
 
             <Input
@@ -111,6 +118,7 @@ export default function LoginPage() {
               autoComplete="current-password"
               required
               placeholder="••••••••"
+              disabled={isLoading}
             />
           </div>
 
@@ -124,6 +132,7 @@ export default function LoginPage() {
             type="submit"
             className="w-full"
             isLoading={isLoading}
+            disabled={isLoading}
           >
             {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </Button>

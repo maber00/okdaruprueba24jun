@@ -1,15 +1,13 @@
 // src/app/dashboard/chat-test/page.tsx
 'use client';
 import { useState } from 'react';
-import DAROChat from '@/app/components/chat/DAROChat';
-import BriefPanel from '@/app/components/analysis/BriefPanel';
-import WireframeDemo from '../../components/analysis/WireframeDemo';
+import DAROChat from '@/app/core/ai/components/DAROChat';
+import BriefPanel from '@/app/core/ai/analysis/components/BriefPanel';
 import { type BriefData } from '@/app/types/brief';
 
 export default function ChatTestPage() {
   const [showBrief, setShowBrief] = useState(false);
   const [briefData, setBriefData] = useState<BriefData | null>(null);
-  const [showWireframe, setShowWireframe] = useState(false);
 
   const handleBriefComplete = (data: BriefData) => {
     setBriefData(data);
@@ -29,9 +27,7 @@ export default function ChatTestPage() {
           <BriefPanel
             data={briefData}
             onEdit={() => {}}
-            onConfirm={() => setShowWireframe(true)}
           />
-          {showWireframe && <WireframeDemo />}
         </div>
       )}
     </div>

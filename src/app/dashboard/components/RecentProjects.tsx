@@ -1,4 +1,4 @@
-// src/app/(dashboard)/components/RecentProjects.tsx
+// src/app/dashboard/components/RecentProjects.tsx
 import { Card, CardHeader, CardContent } from '@/app/shared/components/ui/card';
 import { Calendar, CheckCircle, Clock } from 'lucide-react';
 import type { Project } from '@/app/types/project';
@@ -31,14 +31,14 @@ export default function RecentProjects({ projects }: RecentProjectsProps) {
               <div className="flex items-center space-x-3">
                 {getStatusIcon(project.status)}
                 <div>
-                  <h3 className="font-medium">{project.title}</h3>
+                  <h3 className="font-medium">{project.name}</h3>
                   <p className="text-sm text-gray-500">
-                    {project.client.company}
+                    Cliente ID: {project.clientId}
                   </p>
                 </div>
               </div>
               <div className="text-sm text-gray-500">
-                Vence: {project.dueDate.toLocaleDateString()}
+                Vence: {new Date(project.dueDate).toLocaleDateString()}
               </div>
             </div>
           </div>

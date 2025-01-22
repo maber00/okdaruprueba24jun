@@ -1,36 +1,36 @@
-[debug] [2025-01-17T14:33:30.081Z] ----------------------------------------------------------------------
-[debug] [2025-01-17T14:33:30.091Z] Command:       /opt/homebrew/Cellar/node/23.6.0/bin/node /opt/homebrew/bin/firebase emulators:start
-[debug] [2025-01-17T14:33:30.091Z] CLI Version:   13.29.1
-[debug] [2025-01-17T14:33:30.091Z] Platform:      darwin
-[debug] [2025-01-17T14:33:30.091Z] Node Version:  v23.6.0
-[debug] [2025-01-17T14:33:30.092Z] Time:          Fri Jan 17 2025 09:33:30 GMT-0500 (Colombia Standard Time)
-[debug] [2025-01-17T14:33:30.092Z] ----------------------------------------------------------------------
+[debug] [2025-01-22T19:20:07.112Z] ----------------------------------------------------------------------
+[debug] [2025-01-22T19:20:07.118Z] Command:       /opt/homebrew/Cellar/node/23.6.0/bin/node /opt/homebrew/bin/firebase emulators:start
+[debug] [2025-01-22T19:20:07.119Z] CLI Version:   13.29.1
+[debug] [2025-01-22T19:20:07.119Z] Platform:      darwin
+[debug] [2025-01-22T19:20:07.119Z] Node Version:  v23.6.0
+[debug] [2025-01-22T19:20:07.119Z] Time:          Wed Jan 22 2025 14:20:07 GMT-0500 (Colombia Standard Time)
+[debug] [2025-01-22T19:20:07.119Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2025-01-17T14:33:30.129Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2025-01-17T14:33:30.129Z] > authorizing via signed-in user (okdarulatam@gmail.com)
-[debug] [2025-01-17T14:33:30.296Z] openjdk version "23.0.1" 2024-10-15
+[debug] [2025-01-22T19:20:07.176Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-01-22T19:20:07.177Z] > authorizing via signed-in user (okdarulatam@gmail.com)
+[debug] [2025-01-22T19:20:07.312Z] openjdk version "23.0.1" 2024-10-15
 
-[debug] [2025-01-17T14:33:30.296Z] OpenJDK Runtime Environment Homebrew (build 23.0.1)
+[debug] [2025-01-22T19:20:07.312Z] OpenJDK Runtime Environment Homebrew (build 23.0.1)
 OpenJDK 64-Bit Server VM Homebrew (build 23.0.1, mixed mode, sharing)
 
-[debug] [2025-01-17T14:33:30.299Z] Parsed Java major version: 23
+[debug] [2025-01-22T19:20:07.317Z] Parsed Java major version: 23
 [info] i  emulators: Starting emulators: auth, firestore, storage {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore, storage"}}
-[debug] [2025-01-17T14:33:30.596Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-01-17T14:33:30.596Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-01-17T14:33:30.596Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-01-17T14:33:30.596Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-01-17T14:33:30.596Z] [storage] Storage Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2025-01-17T14:33:30.596Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"storage":[{"address":"127.0.0.1","family":"IPv4","port":9199}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2025-01-17T14:33:30.598Z] [hub] writing locator at /var/folders/51/n2yjpk8d24j56zz_w0m_7g4c0000gn/T/hub-daru-cfcd1.json
-[debug] [2025-01-17T14:33:30.600Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2025-01-17T14:33:30.601Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2025-01-17T14:33:30.601Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/Users/manuel/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","daru-cfcd1","--rules","/Users/manuel/Downloads/daru file/ia/daru-backend/firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8080} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/Users/manuel/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"daru-cfcd1\",\"--rules\",\"/Users/manuel/Downloads/daru file/ia/daru-backend/firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8080}"}}
+[debug] [2025-01-22T19:20:07.592Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-01-22T19:20:07.592Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-01-22T19:20:07.592Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-01-22T19:20:07.592Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-01-22T19:20:07.592Z] [storage] Storage Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-01-22T19:20:07.592Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"storage":[{"address":"127.0.0.1","family":"IPv4","port":9199}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2025-01-22T19:20:07.595Z] [hub] writing locator at /var/folders/51/n2yjpk8d24j56zz_w0m_7g4c0000gn/T/hub-daru-cfcd1.json
+[debug] [2025-01-22T19:20:07.600Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2025-01-22T19:20:07.600Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
+[debug] [2025-01-22T19:20:07.600Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/Users/manuel/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","daru-cfcd1","--rules","/Users/manuel/Downloads/daru file/ia/daru-backend/firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8080} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/Users/manuel/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"daru-cfcd1\",\"--rules\",\"/Users/manuel/Downloads/daru file/ia/daru-backend/firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8080}"}}
 [info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
-[debug] [2025-01-17T14:33:31.467Z] Jan 17, 2025 9:33:31 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+[debug] [2025-01-22T19:20:08.364Z] Jan 22, 2025 2:20:08 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
 INFO: Started WebSocket server on ws://127.0.0.1:9150
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:33:31 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
-[debug] [2025-01-17T14:33:31.483Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
-[debug] [2025-01-17T14:33:31.483Z] 127.0.0.1:8080
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:20:08 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
+[debug] [2025-01-22T19:20:08.376Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
+[debug] [2025-01-22T19:20:08.377Z] 127.0.0.1:8080
 If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
 
    export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080
@@ -44,9 +44,9 @@ Dev App Server is now running.
 
  {"metadata":{"emulator":{"name":"firestore"},"message":"127.0.0.1:8080\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
 [info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2025-01-17T14:33:34.565Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"storage"},"message":"Ignoring unsupported arg: port"}}
-[debug] [2025-01-17T14:33:35.014Z] Temp file directory for storage emulator: /var/folders/51/n2yjpk8d24j56zz_w0m_7g4c0000gn/T/firebase/storage/blobs {"metadata":{"emulator":{"name":"storage"},"message":"Temp file directory for storage emulator: /var/folders/51/n2yjpk8d24j56zz_w0m_7g4c0000gn/T/firebase/storage/blobs"}}
-[debug] [2025-01-17T14:33:35.021Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[debug] [2025-01-22T19:20:10.932Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"storage"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2025-01-22T19:20:11.367Z] Temp file directory for storage emulator: /var/folders/51/n2yjpk8d24j56zz_w0m_7g4c0000gn/T/firebase/storage/blobs {"metadata":{"emulator":{"name":"storage"},"message":"Temp file directory for storage emulator: /var/folders/51/n2yjpk8d24j56zz_w0m_7g4c0000gn/T/firebase/storage/blobs"}}
+[debug] [2025-01-22T19:20:11.374Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
 [info] 
 ┌─────────────────────────────────────────────────────────────┐
 │ ✔  All emulators ready! It is now safe to connect your app. │
@@ -67,224 +67,369 @@ Dev App Server is now running.
 
 Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
  
-[debug] [2025-01-17T14:33:43.549Z] Jan 17, 2025 9:33:43 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+[debug] [2025-01-22T19:20:21.336Z] Jan 22, 2025 2:20:21 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:33:43 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:33:43.617Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:20:21 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:20:21.408Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
  {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
-[debug] [2025-01-17T14:34:18.637Z] Jan 17, 2025 9:34:18 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:34:18 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2025-01-17T14:34:18.822Z] Jan 17, 2025 9:34:18 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:34:18 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2025-01-17T14:34:18.841Z] Jan 17, 2025 9:34:18 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
-INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:34:18 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2025-01-17T14:34:57.379Z] Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+[debug] [2025-01-22T19:21:20.215Z] Jan 22, 2025 2:21:20 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:34:57.572Z] Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:20 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:20.285Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:21:20.362Z] Jan 22, 2025 2:21:20 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:34:57.588Z] Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:20 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:20.374Z] Jan 22, 2025 2:21:20 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:34:57.590Z] Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:20 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:20.389Z] Jan 22, 2025 2:21:20 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:34:57.601Z] Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:20 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:31.725Z] Jan 22, 2025 2:21:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:34:57.609Z] Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:31.825Z] Jan 22, 2025 2:21:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:34:57 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:35:03.655Z] Jan 17, 2025 9:35:03 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:34.926Z] Jan 22, 2025 2:21:34 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:35:03 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:35:19.163Z] Jan 17, 2025 9:35:19 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:34 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:34.948Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:21:38.113Z] Jan 22, 2025 2:21:38 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:35:19 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:35:19.202Z] Jan 17, 2025 9:35:19 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:38 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:38.121Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:21:38.140Z] Jan 22, 2025 2:21:38 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:35:19 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:35:19.213Z] Jan 17, 2025 9:35:19 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:38 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:38.152Z] Jan 22, 2025 2:21:38 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:35:19 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:35:19.226Z] Jan 17, 2025 9:35:19 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:38 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:38.160Z] Jan 22, 2025 2:21:38 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:35:19 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:35:22.803Z] Jan 17, 2025 9:35:22 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:38 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:40.118Z] Jan 22, 2025 2:21:40 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:35:22 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:35:22.855Z] Jan 17, 2025 9:35:22 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:40 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:40.127Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:21:40.199Z] Jan 22, 2025 2:21:40 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:35:22 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:35:23.160Z] Jan 17, 2025 9:35:23 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:40 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:40.206Z] Jan 22, 2025 2:21:40 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:35:23 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:36:23.206Z] Jan 17, 2025 9:36:23 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:40 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:40.216Z] Jan 22, 2025 2:21:40 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:36:23 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:37:23.251Z] Jan 17, 2025 9:37:23 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:40 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:46.410Z] Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:37:23 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:38:23.284Z] Jan 17, 2025 9:38:23 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:46.422Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:21:46.436Z] Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:38:23 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:38:50.708Z] Jan 17, 2025 9:38:50 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:46.441Z] Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:38:50 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:38:50.747Z] Jan 17, 2025 9:38:50 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:46.450Z] Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:38:50 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:38:51.262Z] Jan 17, 2025 9:38:51 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:46.467Z] Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:38:51 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:39:11.118Z] Jan 17, 2025 9:39:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:56.611Z] Jan 22, 2025 2:21:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:39:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:39:11.167Z] Jan 17, 2025 9:39:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:56.644Z] Jan 22, 2025 2:21:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:39:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:39:11.167Z] Jan 17, 2025 9:39:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:58.475Z] Jan 22, 2025 2:21:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:39:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:39:11.730Z] Jan 17, 2025 9:39:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:21:58.496Z] Jan 22, 2025 2:21:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:39:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:40:11.773Z] Jan 17, 2025 9:40:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:21:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:46.656Z] Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:40:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:41:11.838Z] Jan 17, 2025 9:41:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:41:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:42:11.907Z] Jan 17, 2025 9:42:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+Jan 22, 2025 2:22:46 PM com.google.cloud.datastore.emulator.firestore.webchannel.FirestoreV1WebChannelAdapter$FirestoreListenHandler onClose
+INFO: channel closed
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\nJan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\nJan 22, 2025 2:22:46 PM com.google.cloud.datastore.emulator.firestore.webchannel.FirestoreV1WebChannelAdapter$FirestoreListenHandler onClose\nINFO: channel closed\n"}}
+[debug] [2025-01-22T19:22:46.657Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:22:46.662Z] Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:42:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:43:11.996Z] Jan 17, 2025 9:43:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:46.668Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:22:46.675Z] Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:43:11 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:44:09.097Z] Jan 17, 2025 9:44:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:46.678Z] Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:44:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:44:09.241Z] Jan 17, 2025 9:44:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:46.682Z] Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:44:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:44:09.254Z] Jan 17, 2025 9:44:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:46.684Z] Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:44:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:09.294Z] Jan 17, 2025 9:45:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:46.694Z] Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:24.867Z] Jan 17, 2025 9:45:24 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:46.861Z] Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:24 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:24.920Z] Jan 17, 2025 9:45:24 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:46.878Z] Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:24 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:26.761Z] Jan 17, 2025 9:45:26 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:46 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:58.762Z] Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:26 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:26.795Z] Jan 17, 2025 9:45:26 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:58.769Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:22:58.783Z] Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:26 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:27.694Z] Jan 17, 2025 9:45:27 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:58.788Z] Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:27 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:29.560Z] Jan 17, 2025 9:45:29 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:58.796Z] Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:29 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:29.610Z] Jan 17, 2025 9:45:29 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:22:58.809Z] Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:29 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:39.129Z] Jan 17, 2025 9:45:39 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:22:58 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:13.414Z] Jan 22, 2025 2:23:13 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:39 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:45:39.196Z] Jan 17, 2025 9:45:39 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:13 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:13.429Z] Jan 22, 2025 2:23:13 PM com.google.cloud.datastore.emulator.firestore.webchannel.FirestoreV1WebChannelAdapter$FirestoreListenHandler onClose
+INFO: channel closed
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:13 PM com.google.cloud.datastore.emulator.firestore.webchannel.FirestoreV1WebChannelAdapter$FirestoreListenHandler onClose\nINFO: channel closed\n"}}
+[debug] [2025-01-22T19:23:19.811Z] Jan 22, 2025 2:23:19 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:45:39 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:46:09.257Z] Jan 17, 2025 9:46:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:19 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:19.817Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:23:19.827Z] Jan 22, 2025 2:23:19 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:46:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:47:09.335Z] Jan 17, 2025 9:47:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:19 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:19.834Z] Jan 22, 2025 2:23:19 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:47:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:48:09.397Z] Jan 17, 2025 9:48:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:19 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:19.845Z] Jan 22, 2025 2:23:19 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:48:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:49:09.478Z] Jan 17, 2025 9:49:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:19 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:22.597Z] Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:49:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:50:09.525Z] Jan 17, 2025 9:50:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:22.602Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:23:22.671Z] Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:50:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:51:09.585Z] Jan 17, 2025 9:51:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:22.680Z] Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:51:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:52:09.665Z] Jan 17, 2025 9:52:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:22.689Z] Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:52:09 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:52:52.058Z] Jan 17, 2025 9:52:52 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:22.699Z] Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:52:52 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:52:52.234Z] Jan 17, 2025 9:52:52 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:24.824Z] Jan 22, 2025 2:23:24 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:52:52 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:52:56.252Z] Jan 17, 2025 9:52:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:24 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:23:24.852Z] Jan 22, 2025 2:23:24 PM com.google.cloud.datastore.emulator.firestore.webchannel.FirestoreV1WebChannelAdapter$FirestoreListenHandler onClose
+INFO: channel closed
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:23:24 PM com.google.cloud.datastore.emulator.firestore.webchannel.FirestoreV1WebChannelAdapter$FirestoreListenHandler onClose\nINFO: channel closed\n"}}
+[debug] [2025-01-22T19:30:15.316Z] Jan 22, 2025 2:30:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:52:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:52:56.290Z] Jan 17, 2025 9:52:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:30:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:30:15.434Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:30:15.496Z] Jan 22, 2025 2:30:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:52:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:52:56.298Z] Jan 17, 2025 9:52:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:30:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:30:15.505Z] Jan 22, 2025 2:30:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:52:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:53:56.416Z] Jan 17, 2025 9:53:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:30:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:30:15.516Z] Jan 22, 2025 2:30:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:53:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:54:56.503Z] Jan 17, 2025 9:54:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:30:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:31:15.579Z] Jan 22, 2025 2:31:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:54:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:55:56.576Z] Jan 17, 2025 9:55:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:31:15 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:32:31.485Z] Jan 22, 2025 2:32:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:55:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:57:12.132Z] Jan 17, 2025 9:57:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:32:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:33:31.563Z] Jan 22, 2025 2:33:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:57:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:58:12.199Z] Jan 17, 2025 9:58:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:33:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:34:31.613Z] Jan 22, 2025 2:34:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:58:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T14:59:12.247Z] Jan 17, 2025 9:59:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:34:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:35:31.778Z] Jan 22, 2025 2:35:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 9:59:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:00:12.321Z] Jan 17, 2025 10:00:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:35:31 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:35:54.592Z] Jan 22, 2025 2:35:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:00:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:01:12.400Z] Jan 17, 2025 10:01:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:35:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:35:54.613Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:35:54.658Z] Jan 22, 2025 2:35:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:01:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:02:12.459Z] Jan 17, 2025 10:02:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:35:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:35:54.668Z] Jan 22, 2025 2:35:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:02:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:03:12.542Z] Jan 17, 2025 10:03:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:35:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:35:54.690Z] Jan 22, 2025 2:35:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:03:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:04:12.590Z] Jan 17, 2025 10:04:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:35:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:36:22.700Z] Jan 22, 2025 2:36:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:04:12 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:05:28.128Z] Jan 17, 2025 10:05:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:36:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:36:22.708Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:36:22.724Z] Jan 22, 2025 2:36:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:05:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:06:28.198Z] Jan 17, 2025 10:06:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:36:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:36:22.732Z] Jan 22, 2025 2:36:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:06:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:07:28.258Z] Jan 17, 2025 10:07:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:36:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:36:22.741Z] Jan 22, 2025 2:36:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:07:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:08:28.306Z] Jan 17, 2025 10:08:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:36:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:37:22.799Z] Jan 22, 2025 2:37:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:08:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
-[debug] [2025-01-17T15:09:28.536Z] Jan 17, 2025 10:09:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:37:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:38:22.848Z] Jan 22, 2025 2:38:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected non-HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 17, 2025 10:09:28 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:38:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:39:22.911Z] Jan 22, 2025 2:39:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:39:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:40:22.956Z] Jan 22, 2025 2:40:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:40:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:22.994Z] Jan 22, 2025 2:41:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:22 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:51.947Z] Jan 22, 2025 2:41:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:51.957Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:41:51.971Z] Jan 22, 2025 2:41:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:51.978Z] Jan 22, 2025 2:41:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:51.999Z] Jan 22, 2025 2:41:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:51 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:54.381Z] Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:54.422Z] Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:54.828Z] Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:54.842Z] Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:54.891Z] Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:54 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:56.125Z] Jan 22, 2025 2:41:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:56.142Z] Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '"singleProjectMode": false' property in the firebase.json emulators config.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Multiple projectIds are not recommended in single project mode. Requested project ID demo-project, but the emulator is configured for daru-cfcd1. To opt-out of single project mode add/set the '\"singleProjectMode\": false' property in the firebase.json emulators config.\n"}}
+[debug] [2025-01-22T19:41:56.620Z] Jan 22, 2025 2:41:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:56.653Z] Jan 22, 2025 2:41:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:56 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:57.269Z] Jan 22, 2025 2:41:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:57.721Z] Jan 22, 2025 2:41:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:41:57.758Z] Jan 22, 2025 2:41:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:41:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:42:57.803Z] Jan 22, 2025 2:42:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:42:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:43:57.855Z] Jan 22, 2025 2:43:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:43:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:44:57.897Z] Jan 22, 2025 2:44:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:44:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:45:57.943Z] Jan 22, 2025 2:45:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:45:57 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:47:13.509Z] Jan 22, 2025 2:47:13 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:47:13 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:48:29.493Z] Jan 22, 2025 2:48:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:48:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:49:29.542Z] Jan 22, 2025 2:49:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:49:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:50:29.597Z] Jan 22, 2025 2:50:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:50:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:51:29.646Z] Jan 22, 2025 2:51:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:51:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:52:29.683Z] Jan 22, 2025 2:52:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:52:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:53:29.743Z] Jan 22, 2025 2:53:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:53:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:54:29.797Z] Jan 22, 2025 2:54:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:54:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:55:29.847Z] Jan 22, 2025 2:55:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:55:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:56:29.935Z] Jan 22, 2025 2:56:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:56:29 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:57:45.517Z] Jan 22, 2025 2:57:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:57:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:58:45.588Z] Jan 22, 2025 2:58:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:58:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T19:59:45.634Z] Jan 22, 2025 2:59:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 2:59:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T20:00:45.684Z] Jan 22, 2025 3:00:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 3:00:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T20:01:45.725Z] Jan 22, 2025 3:01:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 3:01:45 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T20:03:01.515Z] Jan 22, 2025 3:03:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 3:03:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2025-01-22T20:04:01.576Z] Jan 22, 2025 3:04:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jan 22, 2025 3:04:01 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}

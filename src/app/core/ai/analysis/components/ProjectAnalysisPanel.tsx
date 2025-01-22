@@ -1,4 +1,5 @@
 //src/app/core/ai/analysis/components/ProjectAnalysisPanel.tsx
+import { type TechnicalRequirement } from '@/app/types/project';
 import type { ProjectAnalysis } from '@/app/types/project';
 
 interface ProjectAnalysisPanelProps {
@@ -46,8 +47,10 @@ export default function ProjectAnalysisPanel({
           <h3 className="font-semibold text-gray-700">Requerimientos</h3>
           <div className="mt-2 p-3 bg-blue-50 rounded-md">
             <ul className="list-disc pl-4 space-y-1">
-              {analysis.requirements.map((req: string, index: number) => (
-                <li key={index} className="text-gray-700">{req}</li>
+            {analysis.requirements.map((requirement: TechnicalRequirement, index: number) => (
+                <li key={index} className="text-gray-700">
+                  {requirement.name} {/* o el campo que quieras mostrar */}
+                </li>
               ))}
             </ul>
           </div>
