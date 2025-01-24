@@ -2,10 +2,16 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, connectAuthEmulator } from 'firebase/auth';
 import { getFirestore, connectFirestoreEmulator, doc, setDoc } from 'firebase/firestore';
+import admin from 'firebase-admin';
+
 
 const app = initializeApp({
   projectId: "demo-project",
   apiKey: "demo-key"
+});
+
+admin.initializeApp({
+  projectId: "daru-cfcd1"
 });
 
 const auth = getAuth(app);
@@ -40,6 +46,8 @@ async function setupTestUser() {
   }
 }
 
+
+
 setupTestUser()
   .then(() => {
     console.log('Setup completado');
@@ -49,3 +57,5 @@ setupTestUser()
     console.error('Error en setup:', error);
     process.exit(1);
   });
+
+  

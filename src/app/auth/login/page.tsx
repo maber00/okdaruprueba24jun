@@ -1,5 +1,5 @@
-// src/app/auth/login/page.tsx
 'use client';
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -15,72 +15,50 @@ export default function LoginPage() {
   const router = useRouter();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Nombre corregido
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (user) {
-      router.push('/dashboard');
+    if (!isLoading && user) { // Uso correcto de isLoading
+      router.replace('/dashboard');
     }
-  }, [user, router]);
+  }, [user, isLoading, router]); // Actualización del array de dependencias
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+    setIsLoading(true); // Asegura que isLoading se actualice correctamente
     try {
-      setIsLoading(true);
-      setError('');
-
       const formData = new FormData(e.currentTarget);
       const email = formData.get('email') as string;
       const password = formData.get('password') as string;
 
-      if (!email || !password) {
-        setError('Por favor, ingresa tu email y contraseña');
-        return;
-      }
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      const token = await result.user.getIdToken();
 
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
-      if (userCredential.user) {
-        toast({
-          message: 'Inicio de sesión exitoso'
-        });
-        router.push('/dashboard');
-      }
-
-    } catch (err) {
-      let errorMessage = 'Error al iniciar sesión';
-
-      if (err instanceof FirebaseError) {
-        switch (err.code) {
-          case 'auth/invalid-email':
-            errorMessage = 'El correo electrónico no es válido';
-            break;
-          case 'auth/user-not-found':
-          case 'auth/wrong-password':
-            errorMessage = 'Email o contraseña incorrectos';
-            break;
-          case 'auth/too-many-requests':
-            errorMessage = 'Demasiados intentos fallidos. Por favor, intenta más tarde';
-            break;
-          case 'auth/user-disabled':
-            errorMessage = 'Esta cuenta ha sido deshabilitada';
-            break;
-          default:
-            errorMessage = 'Error al iniciar sesión. Por favor, intenta nuevamente';
-        }
-      }
-
+      document.cookie = `firebase-token=${token}; path=/`;
+      router.replace('/dashboard');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof FirebaseError
+          ? getFirebaseErrorMessage(error.code)
+          : 'Error al iniciar sesión';
       setError(errorMessage);
-      toast({
-        message: errorMessage
-      });
-
+      toast({ message: errorMessage });
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Restablece isLoading al finalizar
     }
   };
+
+  function getFirebaseErrorMessage(code: string): string {
+    const errorMessages: Record<string, string> = {
+      'auth/invalid-email': 'El correo electrónico no es válido',
+      'auth/user-not-found': 'Email o contraseña incorrectos',
+      'auth/wrong-password': 'Email o contraseña incorrectos',
+      'auth/too-many-requests': 'Demasiados intentos fallidos. Por favor, intenta más tarde',
+      'auth/user-disabled': 'Esta cuenta ha sido deshabilitada',
+    };
+    return errorMessages[code] || 'Error al iniciar sesión. Por favor, intenta nuevamente';
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -95,11 +73,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form 
-          className="mt-8 space-y-6" 
-          onSubmit={handleSubmit}
-          noValidate
-        >
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
           <div className="space-y-4">
             <Input
               label="Email"
@@ -108,7 +82,7 @@ export default function LoginPage() {
               autoComplete="email"
               required
               placeholder="tu@email.com"
-              disabled={isLoading}
+              disabled={isLoading} // Bloquea los inputs mientras carga
             />
 
             <Input
@@ -118,7 +92,7 @@ export default function LoginPage() {
               autoComplete="current-password"
               required
               placeholder="••••••••"
-              disabled={isLoading}
+              disabled={isLoading} // Bloquea los inputs mientras carga
             />
           </div>
 
@@ -128,20 +102,12 @@ export default function LoginPage() {
             </div>
           )}
 
-          <Button
-            type="submit"
-            className="w-full"
-            isLoading={isLoading}
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full" isLoading={isLoading} disabled={isLoading}>
             {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </Button>
 
           <div className="text-center">
-            <Link 
-              href="/auth/forgot-password" 
-              className="text-sm text-blue-600 hover:text-blue-500"
-            >
+            <Link href="/auth/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
               ¿Olvidaste tu contraseña?
             </Link>
           </div>

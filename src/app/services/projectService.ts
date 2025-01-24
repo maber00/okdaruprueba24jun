@@ -1,35 +1,31 @@
 // src/app/services/projectService.ts
-import { 
-  
-  collection, 
+import {
+  collection,
   doc,
   getDoc,
   getDocs,
-  addDoc,
-  updateDoc,
   query,
   where,
   orderBy,
   arrayUnion,
-  type QueryConstraint,
-  Timestamp
+  updateDoc,
+  addDoc,
+  Timestamp,
 } from 'firebase/firestore';
 import { db } from '@/app/lib/firebase';
-import { authLogger } from '@/app/lib/logger';
-import type { 
+import type {
   Project,
-  ProjectStatus,
   ProjectMember,
   ProjectTimeline,
   ProjectDeliverable,
   Permission,
   TeamRole,
-  BriefContent,
-  AIAnalysis
+  ProjectStatus,
 } from '@/app/types/project';
 
 // Error personalizado para el servicio
-class ProjectServiceError extends Error {
+// Clase de error personalizada
+export class ProjectServiceError extends Error {
   constructor(
     message: string,
     public code: 'NOT_FOUND' | 'INVALID_STATUS' | 'INVALID_DATA' | 'UNAUTHORIZED' | 'UNKNOWN',
@@ -40,72 +36,75 @@ class ProjectServiceError extends Error {
   }
 }
 
-// Validar estado del proyecto
-const isValidProjectStatus = (status: string): status is ProjectStatus => {
-  return ['inquiry', 'draft', 'briefing', 'review', 'approved', 
-          'in_progress', 'client_review', 'revisions', 'completed', 
-          'cancelled'].includes(status);
-};
 
+// Clase del servicio de proyectos
 class ProjectService {
   private projectsCollection = collection(db, 'projects');
-  private defaultPermissions: Permission[] = ['view_project'];
+  private defaultPermissions: Permission[] = [];
 
 
-  // Crear nuevo proyecto (puede iniciar como inquiry o draft)
-  async createProject(
-    projectData: Partial<Project>,
-    aiAnalysis?: AIAnalysis
-  ): Promise<string> {
-    try {
-      const defaultData = {
-        status: 'inquiry' as ProjectStatus,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-        createdBy: 'DARU',
-        team: [],
-        timeline: [],
-        deliverables: [],
-        brief: {
-          approved: false,
-          content: {},
-          updatedAt: new Date().toISOString(),
-          version: 1  // Añadimos la versión inicial
-        },
-        metadata: {
-          priority: 'medium',
-          tags: [],
-          aiAnalysis
-        }
-      };
-      
-
-      const docRef = await addDoc(
-        this.projectsCollection, 
-        { ...defaultData, ...projectData }
-      );
-
-      authLogger.info('ProjectService', 'Project created', { 
-        projectId: docRef.id 
-      });
-
-      return docRef.id;
-    } catch (error) {
-      authLogger.error('ProjectService', 'Error creating project:', error);
-      throw new ProjectServiceError(
-        'Failed to create project',
-        'UNKNOWN',
-        error
-      );
+  async getUserProjects(userId: string): Promise<Project[]> {
+    // 1. Si userId viene vacío o undefined, lanzamos error con mensaje
+    if (!userId) {
+      throw new ProjectServiceError('No userId provided to getUserProjects', 'UNKNOWN');
     }
-  }
 
-  // Obtener proyecto por ID
+    try {
+      console.log(`Fetching projects for user ID: ${userId}`);
+      const q = query(
+        this.projectsCollection,
+        where('clientId', '==', userId),
+        orderBy('createdAt', 'desc')
+      );
+
+      const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.warn(`No projects found for user ID: ${userId}`);
+      return [];
+    }
+
+    return querySnapshot.docs.map((docSnap) => {
+      const data = docSnap.data();
+      if (!data || !data.createdAt) {
+        console.error('Documento con datos incompletos:', docSnap.id, data);
+        throw new ProjectServiceError(
+          `Document ${docSnap.id} is missing required fields`,
+          'INVALID_DATA',
+          { documentId: docSnap.id, data }
+        );
+      }
+      return {
+        id: docSnap.id,
+        ...data,
+        createdAt: data.createdAt.toDate(),
+        updatedAt: data.updatedAt?.toDate() || new Date(),
+        dueDate: data.dueDate?.toDate() || null,
+        startDate: data.startDate?.toDate() || null,
+      } as Project;
+    });
+
+  } catch (error) {
+    console.error('Error in getUserProjects RAW:', error);
+    if (error instanceof Error) {
+      console.error('Message:', error.message);
+      console.error('Stack:', error.stack);
+    }
+    throw new ProjectServiceError(
+      error instanceof Error 
+        ? error.message 
+        : 'Failed to fetch user projects', 
+      'UNKNOWN',
+      error
+    );
+  }
+}
+  // Obtener un proyecto por ID
   async getProject(projectId: string): Promise<Project | null> {
     try {
       const docRef = doc(this.projectsCollection, projectId);
       const docSnap = await getDoc(docRef);
-      
+
       if (!docSnap.exists()) {
         return null;
       }
@@ -114,99 +113,51 @@ class ProjectService {
       return {
         id: docSnap.id,
         ...data,
-        createdAt: data.createdAt?.toDate?.() || data.createdAt,
-        updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
-        dueDate: data.dueDate?.toDate?.() || data.dueDate,
-        startDate: data.startDate?.toDate?.() || data.startDate,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date(),
+        dueDate: data.dueDate?.toDate() || new Date(),
+        startDate: data.startDate?.toDate() || new Date(),
       } as Project;
     } catch (error) {
-      authLogger.error('ProjectService', 'Error getting project:', error);
-      throw new ProjectServiceError(
-        'Failed to fetch project',
-        'NOT_FOUND',
-        error
-      );
+      console.error('Error fetching project:', error);
+      throw new ProjectServiceError('Failed to fetch project', 'NOT_FOUND', error);
     }
   }
 
-  // Obtener proyectos del usuario
-  async getUserProjects(userId: string, role?: ProjectMember['role']): Promise<Project[]> {
+  // Crear nuevo proyecto
+  async createProject(projectData: Partial<Project>): Promise<string> {
     try {
-      let constraints: QueryConstraint[] = [];
-      
-      if (role) {
-        constraints = [
-          where('team', 'array-contains', {
-            userId,
-            role,
-          }),
-          orderBy('createdAt', 'desc')
-        ];
-      } else {
-        constraints = [
-          where('team', 'array-contains-any', [{
-            userId,
-            role: 'admin'
-          }, {
-            userId,
-            role: 'project_manager'
-          }, {
-            userId,
-            role: 'designer'
-          }, {
-            userId,
-            role: 'client'
-          }]),
-          orderBy('createdAt', 'desc')
-        ];
-      }
-  
-      const q = query(this.projectsCollection, ...constraints);
-      const snapshot = await getDocs(q);
-      
-      authLogger.info('ProjectService', 'Projects fetched successfully', {
-        userId,
-        role,
-        count: snapshot.docs.length
-      });
-  
-      return snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt?.toDate?.() || data.createdAt,
-          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
-          dueDate: data.dueDate?.toDate?.() || data.dueDate,
-          startDate: data.startDate?.toDate?.() || data.startDate,
-        };
-      }) as Project[];
+      const defaultData = {
+        status: 'inquiry',
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+        team: [],
+        timeline: [],
+        deliverables: [],
+        brief: {
+          approved: false,
+          content: {},
+          updatedAt: new Date().toISOString(),
+          version: 1,
+        },
+      };
+
+      const docRef = await addDoc(this.projectsCollection, { ...defaultData, ...projectData });
+      return docRef.id;
     } catch (error) {
-      authLogger.error('ProjectService', 'Error getting user projects:', error);
-      throw new ProjectServiceError(
-        'Failed to fetch user projects',
-        'UNKNOWN',
-        error
-      );
+      console.error('Error creating project:', error);
+      throw new ProjectServiceError('Failed to create project', 'UNKNOWN', error);
     }
   }
 
   // Actualizar estado del proyecto
   async updateProjectStatus(
-    projectId: string, 
-    status: ProjectStatus, 
-    userId: string, 
+    projectId: string,
+    status: ProjectStatus,
+    userId: string,
     comment?: string
   ): Promise<void> {
     try {
-      // Validar el estado
-      if (!isValidProjectStatus(status)) {
-        throw new ProjectServiceError(
-          `Invalid project status: ${status}`,
-          'INVALID_STATUS'
-        );
-      }
-
       const projectRef = doc(this.projectsCollection, projectId);
       const timelineEntry: ProjectTimeline = {
         id: Date.now().toString(),
@@ -214,203 +165,134 @@ class ProjectService {
         status,
         updatedBy: userId,
         comment,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
-  
+
       await updateDoc(projectRef, {
         status,
         updatedAt: Timestamp.now(),
-        'timeline': arrayUnion(timelineEntry)
-      });
-      
-      authLogger.info('ProjectService', 'Project status updated', { 
-        projectId, 
-        status, 
-        userId 
+        timeline: arrayUnion(timelineEntry),
       });
     } catch (error) {
-      if (error instanceof ProjectServiceError) {
-        throw error;
-      }
-      authLogger.error('ProjectService', 'Error updating project status:', error);
-      throw new ProjectServiceError(
-        'Failed to update project status',
-        'UNKNOWN',
-        error
-      );
+      console.error('Error updating project status:', error);
+      throw new ProjectServiceError('Failed to update project status', 'UNKNOWN', error);
     }
   }
 
-// Agregar miembro al equipo del proyecto
-async addTeamMember(
-  projectId: string,
-  email: string,
-  role: TeamRole,
-  customPermissions: Permission[] = []
-): Promise<void> {
-  try {
-    const projectRef = doc(this.projectsCollection, projectId);
-    
-    // Verificar que el proyecto existe
-    const project = await getDoc(projectRef);
-    if (!project.exists()) {
-      throw new ProjectServiceError(
-        'Project not found',
-        'NOT_FOUND'
+  // Añadir entregable
+  async addDeliverable(projectId: string, deliverable: Omit<ProjectDeliverable, 'id'>): Promise<void> {
+    try {
+      const projectRef = doc(this.projectsCollection, projectId);
+      const deliverableWithId = { ...deliverable, id: Date.now().toString() };
+
+      await updateDoc(projectRef, {
+        deliverables: arrayUnion(deliverableWithId),
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Error adding deliverable:', error);
+      throw new ProjectServiceError('Failed to add deliverable', 'UNKNOWN', error);
+    }
+  }
+
+  // Agregar miembro al equipo
+  async addTeamMember(
+    projectId: string,
+    email: string,
+    role: TeamRole,
+    customPermissions: Permission[] = []
+  ): Promise<void> {
+    try {
+      const projectRef = doc(this.projectsCollection, projectId);
+
+      const project = await getDoc(projectRef);
+      if (!project.exists()) {
+        throw new ProjectServiceError('Project not found', 'NOT_FOUND');
+      }
+
+      const allPermissions: Permission[] = [...this.defaultPermissions, ...customPermissions];
+
+      const member: ProjectMember = {
+        id: Date.now().toString(),
+        userId: email,
+        role,
+        permissions: allPermissions,
+        joinedAt: new Date().toISOString(),
+      };
+
+      await updateDoc(projectRef, {
+        team: arrayUnion(member),
+        updatedAt: Timestamp.now(),
+      });
+    } catch (error) {
+      console.error('Error adding team member:', error);
+      throw new ProjectServiceError('Failed to add team member', 'UNKNOWN', error);
+    }
+  }
+
+  // Eliminar miembro del equipo
+  async removeTeamMember(projectId: string, memberId: string): Promise<void> {
+    try {
+      const projectRef = doc(this.projectsCollection, projectId);
+
+      const project = await getDoc(projectRef);
+      if (!project.exists()) {
+        throw new ProjectServiceError('Project not found', 'NOT_FOUND');
+      }
+
+      const data = project.data();
+      const updatedTeam = data.team.filter(
+        (member: ProjectMember) => member.id !== memberId
       );
+
+      await updateDoc(projectRef, {
+        team: updatedTeam,
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Error removing team member:', error);
+      throw new ProjectServiceError('Failed to remove team member', 'UNKNOWN', error);
     }
-
-    const allPermissions: Permission[] = [...this.defaultPermissions, ...customPermissions];
-
-    const member: ProjectMember = {
-      id: Date.now().toString(),
-      userId: email,
-      role,
-      permissions: allPermissions,
-      joinedAt: new Date().toISOString()
-    };
-
-    await updateDoc(projectRef, {
-      team: arrayUnion(member),
-      updatedAt: Timestamp.now()
-    });
-
-    authLogger.info('ProjectService', 'Team member added', { 
-      projectId, 
-      role,
-      email 
-    });
-  } catch (error) {
-    if (error instanceof ProjectServiceError) {
-      throw error;
-    }
-    authLogger.error('ProjectService', 'Error adding team member:', error);
-    throw new ProjectServiceError(
-      'Failed to add team member',
-      'UNKNOWN',
-      error
-    );
   }
 }
 
-async updateProjectBrief(
-  projectId: string,
-  briefContent: BriefContent,
-  approved: boolean = false
-): Promise<void> {
+export async function createTestProject(userId: string) {
   try {
-    const projectRef = doc(this.projectsCollection, projectId);
-    await updateDoc(projectRef, {
+    const projectsRef = collection(db, 'projects');
+    
+    const projectData = {
+      name: "Proyecto Test",
+      type: "design",
+      status: "in_progress", 
+      description: "Proyecto de prueba",
+      clientId: userId,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
       brief: {
-        content: briefContent,
-        approved,
+        approved: false,
+        content: {},
         updatedAt: new Date().toISOString(),
-        version: 1 // Añadimos la versión requerida
+        version: 1
       },
-      updatedAt: new Date().toISOString()
-    });
-
-    authLogger.info('ProjectService', 'Brief updated successfully', { 
-      projectId,
-      approved
-    });
+      team: [],
+      timeline: [],
+      deliverables: [],
+      metadata: {
+        priority: "medium",
+        tags: [],
+        progress: 0,
+        healthStatus: "on-track"
+      }
+    };
+ 
+    const docRef = await addDoc(projectsRef, projectData);
+    return docRef.id;
+ 
   } catch (error) {
-    authLogger.error('ProjectService', 'Error updating brief:', error);
+    console.error('Error creating test project:', error);
     throw error;
   }
-}
+ }
+ 
 
-      // Método para añadir entregables al proyecto
-      async addDeliverable(
-        projectId: string,
-        deliverable: Omit<ProjectDeliverable, 'id'>
-      ): Promise<void> {
-        try {
-          const projectRef = doc(this.projectsCollection, projectId);
-          const deliverableWithId = {
-            ...deliverable,
-            id: Date.now().toString()
-          };
-    
-          await updateDoc(projectRef, {
-            'deliverables': arrayUnion(deliverableWithId),
-            updatedAt: new Date().toISOString()
-          });
-  
-          authLogger.info('ProjectService', 'Deliverable added successfully', { 
-            projectId,
-            deliverableId: deliverableWithId.id
-          });
-        } catch (error) {
-          authLogger.error('ProjectService', 'Error adding deliverable:', error);
-          throw error;
-        }
-      }
-  
-      // Método para actualizar el estado de un entregable
-      async updateDeliverableStatus(
-        projectId: string,
-        deliverableId: string,
-        status: 'pending' | 'in_progress' | 'completed'
-      ): Promise<void> {
-        try {
-          const projectRef = doc(this.projectsCollection, projectId);
-          const project = await getDoc(projectRef);
-          
-          if (!project.exists()) {
-            throw new Error('Project not found');
-          }
-  
-          const data = project.data();
-          const deliverables = data.deliverables || [];
-          const updatedDeliverables = deliverables.map((d: ProjectDeliverable) => 
-            d.id === deliverableId ? { ...d, status } : d
-          );
-  
-          await updateDoc(projectRef, {
-            deliverables: updatedDeliverables,
-            updatedAt: new Date().toISOString()
-          });
-  
-          authLogger.info('ProjectService', 'Deliverable status updated', { 
-            projectId,
-            deliverableId,
-            status
-          });
-        } catch (error) {
-          authLogger.error('ProjectService', 'Error updating deliverable status:', error);
-          throw error;
-        }
-      }
-      async removeTeamMember(projectId: string, memberId: string): Promise<void> {
-        try {
-          const projectRef = doc(this.projectsCollection, projectId);
-          const project = await getDoc(projectRef);
-          
-          if (!project.exists()) {
-            throw new Error('Project not found');
-          }
-    
-          const data = project.data();
-          const updatedTeam = data.team.filter(
-            (member: ProjectMember) => member.id !== memberId
-          );
-    
-          await updateDoc(projectRef, {
-            team: updatedTeam,
-            updatedAt: new Date().toISOString()
-          });
-    
-          authLogger.info('ProjectService', 'Team member removed', { 
-            projectId, 
-            memberId 
-          });
-        } catch (error) {
-          authLogger.error('ProjectService', 'Error removing team member:', error);
-          throw error;
-        }
-      }
-    }
-  
 export const projectService = new ProjectService();
-export type { ProjectServiceError };

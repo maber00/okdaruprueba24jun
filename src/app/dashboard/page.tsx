@@ -1,246 +1,140 @@
-// src/app/(dashboard)/dashboard/page.tsx
+// src/app/dashboard/page.tsx
 'use client';
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/core/auth/hooks/useAuth';
-import { 
-  Clock, 
-  CheckCircle, 
-  AlertCircle, 
-  MessageSquare, 
-  RefreshCw, 
-  PlusCircle
-} from 'lucide-react';
-import Avatar from '@/app/shared/components/ui/Avatar';
+import { projectService, createTestProject } from '@/app/services/projectService';
+import DashboardStats from './components/DashboardStats';
+import Button from '@/app/shared/components/ui/Button';
 
 interface DashboardStats {
   totalProjects: number;
   activeProjects: number;
   completedProjects: number;
-}
-
-interface RecentProject {
-  id: string;
-  title: string;
-  client: string;
-  status: 'pending' | 'in_progress' | 'completed';
-  dueDate: string;
-  type: string;
-}
-
-interface Activity {
-  id: string;
-  user: {
-    name: string;
-    avatar?: string;
+  projects: {
+    total: number;
+    active: number;
+    completed: number;
   };
-  action: string;
-  target: string;
-  timestamp: string;
-  type: 'comment' | 'update' | 'create' | 'complete';
+  clients: {
+    total: number;
+    active: number;
+  };
+  revenue: {
+    total: number;
+    monthly: number;
+    growth: number;
+  };
 }
 
 export default function DashboardPage() {
-  const { user } = useAuth();
-  
-  const [stats] = useState<DashboardStats>({
-    totalProjects: 25,
-    activeProjects: 10,
-    completedProjects: 15
-  });
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const [stats, setStats] = useState<DashboardStats>(() => ({
+    totalProjects: 0,
+    activeProjects: 0,
+    completedProjects: 0,
+    projects: { total: 0, active: 0, completed: 0 },
+    clients: { total: 0, active: 0 },
+    revenue: { total: 0, monthly: 0, growth: 0 },
+  }));
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [recentProjects] = useState<RecentProject[]>([
-    {
-      id: '1',
-      title: 'Diseño volantes QR',
-      client: 'Marcela Baquero Studio',
-      status: 'in_progress',
-      dueDate: '2024-12-01',
-      type: 'design'
-    },
-    {
-      id: '2',
-      title: 'Desarrollo sitio web',
-      client: 'Convergence IO',
-      status: 'completed',
-      dueDate: '2024-11-30',
-      type: 'web_development'
-    },
-    {
-      id: '3',
-      title: 'Video publicitario',
-      client: 'Rockstars LATAM',
-      status: 'pending',
-      dueDate: '2024-12-15',
-      type: 'video'
-    }
-  ]);
-
-  const [activities] = useState<Activity[]>([
-    {
-      id: '1',
-      user: {
-        name: 'Olivia López',
-       
-      },
-      action: 'comentó en',
-      target: 'Diseño volantes QR',
-      timestamp: '2024-11-25T14:30:00',
-      type: 'comment'
-    },
-    {
-      id: '2',
-      user: {
-        name: 'Jeff Martinez',
-       
-      },
-      action: 'actualizó',
-      target: 'Video publicitario',
-      timestamp: '2024-11-25T13:15:00',
-      type: 'update'
-    },
-    {
-      id: '3',
-      user: {
-        name: 'Samuel Santa',
-       
-      },
-      action: 'completó',
-      target: 'Desarrollo sitio web',
-      timestamp: '2024-11-25T12:00:00',
-      type: 'complete'
-    }
-  ]);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'text-green-500';
-      case 'in_progress':
-        return 'text-blue-500';
-      case 'pending':
-        return 'text-yellow-500';
-      default:
-        return 'text-gray-500';
+  const handleCreateTest = async () => {
+    if (!user?.uid) return;
+    try {
+      const projectId = await createTestProject(user.uid);
+      console.log('Proyecto creado:', projectId);
+      const projects = await projectService.getUserProjects(user.uid);
+      // Actualizar stats con los nuevos datos
+      if (Array.isArray(projects)) {
+        const activeProjects = projects.filter(p => p.status === 'in_progress');
+        const completedProjects = projects.filter(p => p.status === 'completed');
+        setStats({
+          totalProjects: projects.length,
+          activeProjects: activeProjects.length,
+          completedProjects: completedProjects.length,
+          projects: {
+            total: projects.length,
+            active: activeProjects.length,
+            completed: completedProjects.length,
+          },
+          clients: { total: 0, active: 0 },
+          revenue: { total: 0, monthly: 0, growth: 0 },
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Error al crear proyecto de prueba');
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="h-5 w-5" />;
-      case 'in_progress':
-        return <Clock className="h-5 w-5" />;
-      case 'pending':
-        return <AlertCircle className="h-5 w-5" />;
-      default:
-        return null;
+  useEffect(() => {
+    if (loading) return;
+    if (!user?.uid) {
+      router.replace('/auth/login');
+      return;
     }
-  };
 
-  const getActivityIcon = (type: Activity['type']) => {
-    switch (type) {
-      case 'comment':
-        return <MessageSquare className="h-5 w-5 text-blue-500" />;
-      case 'update':
-        return <RefreshCw className="h-5 w-5 text-yellow-500" />;
-      case 'create':
-        return <PlusCircle className="h-5 w-5 text-green-500" />;
-      case 'complete':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
-      default:
-        return null;
-    }
-  };
+    const loadDashboardData = async () => {
+      try {
+        setIsLoading(true);
+        const projects = await projectService.getUserProjects(user.uid);
+        if (Array.isArray(projects)) {
+          const activeProjects = projects.filter(p => p.status === 'in_progress');
+          const completedProjects = projects.filter(p => p.status === 'completed');
+          setStats({
+            totalProjects: projects.length,
+            activeProjects: activeProjects.length,
+            completedProjects: completedProjects.length,
+            projects: {
+              total: projects.length,
+              active: activeProjects.length,
+              completed: completedProjects.length,
+            },
+            clients: { total: 0, active: 0 },
+            revenue: { total: 0, monthly: 0, growth: 0 },
+          });
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error al cargar datos');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, [user, loading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="bg-red-50 border-l-4 border-red-500 p-4">
+          <p className="text-red-700">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <span className="text-gray-500">
-          Bienvenido, {user?.displayName || user?.email}
-        </span>
+        <Button onClick={handleCreateTest}>
+          Crear Proyecto Test
+        </Button>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm">Total Proyectos</h3>
-          <p className="text-3xl font-bold">{stats.totalProjects}</p>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm">Proyectos Activos</h3>
-          <p className="text-3xl font-bold">{stats.activeProjects}</p>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm">Proyectos Completados</h3>
-          <p className="text-3xl font-bold">{stats.completedProjects}</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold">Proyectos Recientes</h2>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {recentProjects.map((project) => (
-              <div key={project.id} className="p-6 hover:bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className={getStatusColor(project.status)}>
-                      {getStatusIcon(project.status)}
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-medium">{project.title}</h3>
-                      <p className="text-sm text-gray-500">{project.client}</p>
-                    </div>
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    Vence: {new Date(project.dueDate).toLocaleDateString()}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold">Actividad Reciente</h2>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {activities.map((activity) => (
-              <div key={activity.id} className="p-4 hover:bg-gray-50">
-                <div className="flex space-x-3">
-                  <div className="flex-shrink-0">
-                    <Avatar 
-                      src={activity.user.avatar}
-                      alt={activity.user.name}
-                      size={32}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center">
-                      {getActivityIcon(activity.type)}
-                      <div className="ml-2">
-                        <p className="text-sm text-gray-800">
-                          <span className="font-medium">{activity.user.name}</span>{' '}
-                          {activity.action}{' '}
-                          <span className="font-medium">{activity.target}</span>
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {new Date(activity.timestamp).toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <DashboardStats stats={stats} />
     </div>
   );
 }

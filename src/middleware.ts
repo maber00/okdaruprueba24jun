@@ -4,6 +4,8 @@ import type { NextRequest } from 'next/server';
 import { authLogger } from '@/app/lib/logger';
 
 export async function middleware(request: NextRequest) {
+  console.log('Middleware ejecutándose para:', request.url);
+
   try {
     // Permitir rutas públicas
     if (
@@ -17,8 +19,11 @@ export async function middleware(request: NextRequest) {
 
     // Obtener el token de Firebase de las cookies
     const authToken = request.cookies.get('firebase-token');
+    console.log('Token encontrado:', !!authToken);
+
 
     if (!authToken) {
+      console.log('Redirigiendo a login por falta de token');
       authLogger.warn('middleware', 'No auth token found');
       return NextResponse.redirect(new URL('/auth/login', request.url));
     }

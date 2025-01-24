@@ -14,14 +14,10 @@ export const viewport: Viewport = {
   themeColor: '#3B82F6',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body>
         <AppProviders>
           {children}
           <ToastViewport />

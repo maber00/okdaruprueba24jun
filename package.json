@@ -9,8 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "NODE_ENV=development ts-node --esm scripts/seedEmulator.ts",
-    "emulator": "firebase emulators:start --import=./seed-data --export-on-exit",
-    "setup-auth": "ts-node scripts/setupAuth.ts"
+    "emulator": "firebase emulators:start",
+    "setup": "ts-node scripts/setupAuth.ts && ts-node scripts/seedEmulator.ts"
   },
   "dependencies": {
     "@firebase/storage": "^0.13.4",
