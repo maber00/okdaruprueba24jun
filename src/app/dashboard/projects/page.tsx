@@ -1,190 +1,84 @@
-// src/app/dashboard/projects/page.tsx
 'use client';
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/core/auth/hooks/useAuth';
-import { ProjectCard } from './components/ProjectCard';
 import { projectService } from '@/app/services/projectService';
-import Button from '@/app/shared/components/ui/Button';
-import Input from '@/app/shared/components/ui/Input';
-import { Card } from '@/app/shared/components/ui/card';
-import { 
-  Plus, 
-  Search, 
-  Grid as GridIcon, 
-  List, 
-  Brain 
-} from 'lucide-react';
-import type { Project, ProjectStatus } from '@/app/types/project';
+import DashboardStats from './components/DashboardStats';
+import RecentProjects from './components/RecentProjects';
+import ActivityFeed from './components/ActivityFeed';
+import LoadingSpinner from '@/app/shared/components/ui/LoadingSpinner';
+import ErrorMessage from '@/app/shared/components/ui/ErrorMessage';
+import type { DashboardStats as DashboardStatsType } from '@/app/types/project';
 
-const statusFilters: { value: ProjectStatus; label: string }[] = [
-  { value: 'inquiry', label: 'Consulta' },
-  { value: 'draft', label: 'Borrador' },
-  { value: 'briefing', label: 'Resumen' },
-  { value: 'review', label: 'Revisión' },
-  { value: 'approved', label: 'Aprobado' },
-  { value: 'in_progress', label: 'En progreso' },
-  { value: 'client_review', label: 'Revisión del cliente' },
-  { value: 'revisions', label: 'Revisiones' },
-  { value: 'completed', label: 'Completado' },
-  { value: 'cancelled', label: 'Cancelado' },
-];
+const initialStats: DashboardStatsType = {
+ totalProjects: 0,
+ activeProjects: 0,
+ completedProjects: 0,
+ projects: { total: 0, active: 0, completed: 0 },
+ clients: { total: 0, active: 0 },
+ revenue: { total: 0, monthly: 0, growth: 0 }
+};
 
-export interface ProjectCardProps {
-  project: Project;
-  onClick: () => void;
-  viewMode: 'grid' | 'list';
-}
+export default function DashboardPage() {
+ const { user, loading } = useAuth();
+ const router = useRouter();
+ const [stats, setStats] = useState<DashboardStatsType>(initialStats);
+ const [isLoading, setIsLoading] = useState(true);
+ const [error, setError] = useState<string | null>(null);
 
-export default function ProjectsPage() {
-  const router = useRouter();
-  const { user } = useAuth();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | 'all'>('all');
-  
+ const loadDashboardData = useCallback(async () => {
+   if (!user?.uid) return;
 
-  useEffect(() => {
-    const loadProjects = async () => {
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
+   try {
+     setIsLoading(true);
+     const projectStats = await projectService.getProjectStats(user.uid);
+     
+     setStats({
+       totalProjects: projectStats.total,
+       activeProjects: projectStats.active,
+       completedProjects: projectStats.completed,
+       projects: projectStats,
+       clients: { total: 0, active: 0 },
+       revenue: { total: 0, monthly: 0, growth: 0 }
+     });
+   } catch (err) {
+     setError(err instanceof Error ? err.message : 'Error al cargar datos');
+   } finally {
+     setIsLoading(false);
+   }
+ }, [user?.uid]);
 
-      try {
-        setIsLoading(true);
-        const userProjects = await projectService.getUserProjects(user.uid);
-        setProjects(userProjects);
-        setFilteredProjects(userProjects);
-      } catch (error) {
-        console.error('Error loading projects:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+ useEffect(() => {
+   if (!loading && !user?.uid) {
+     router.replace('/auth/login');
+     return;
+   }
+   loadDashboardData();
+ }, [loading, user?.uid, router, loadDashboardData]);
 
-    loadProjects();
-  }, [user]);
+ if (isLoading) {
+   return <LoadingSpinner />;
+ }
 
-  // Filtrado de proyectos
-  useEffect(() => {
-    let filtered = [...projects];
+ if (error) {
+   return <ErrorMessage message={error} />;
+ }
 
-    // Filtrar por búsqueda
-    if (searchTerm) {
-      filtered = filtered.filter(project =>
-        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+ return (
+   <div className="space-y-6 p-6">
+     <div className="flex justify-between items-center">
+       <h1 className="text-2xl font-bold">Dashboard</h1>
+       <span className="text-gray-500">
+         Bienvenido, {user?.displayName || user?.email}
+       </span>
+     </div>
 
-    // Filtrar por estado
-    if (selectedStatus !== 'all') {
-      filtered = filtered.filter(project => project.status === selectedStatus);
-    }
+     <DashboardStats stats={stats} />
 
-    setFilteredProjects(filtered);
-  }, [searchTerm, selectedStatus, projects]);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Proyectos</h1>
-        <Button onClick={() => router.push('/dashboard/projects/create')}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nuevo Proyecto
-        </Button>
-      </div>
-
-      {/* Filtros */}
-      <div className="flex gap-4 flex-wrap">
-        <div className="flex-1 min-w-[300px]">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              type="search"
-              placeholder="Buscar proyectos..."
-              className="pl-10"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-2">
-          <select
-            className="border rounded-lg px-4 py-2"
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value as ProjectStatus | 'all')}
-          >
-            <option value="all">Todos los estados</option>
-            {statusFilters.map(({ value, label }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-
-          <div className="flex rounded-lg border">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`p-2 ${viewMode === 'grid' ? 'bg-blue-50 text-blue-600' : 'text-gray-500'}`}
-            >
-              <GridIcon className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`p-2 ${viewMode === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-500'}`}
-            >
-              <List className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Lista de Proyectos */}
-      {filteredProjects.length === 0 ? (
-        <Card className="p-12 text-center">
-          <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">No hay proyectos</h3>
-          <p className="mt-2 text-sm text-gray-500">
-            Comienza creando un nuevo proyecto con DARU.
-          </p>
-          <div className="mt-6">
-            <Button onClick={() => router.push('/dashboard/projects/create')}>
-              <Plus className="h-4 w-4 mr-2" />
-              Crear Proyecto
-            </Button>
-          </div>
-        </Card>
-      ) : (
-        <div className={viewMode === 'grid' 
-          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-          : 'space-y-4'
-        }>
-          {filteredProjects.map((project) => (
-            <ProjectCard 
-              key={project.id} 
-              project={project}
-              viewMode={viewMode}
-              onClick={() => router.push(`/dashboard/projects/${project.id}`)}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
+     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+       <RecentProjects className="lg:col-span-2" />
+       <ActivityFeed />
+     </div>
+   </div>
+ );
 }

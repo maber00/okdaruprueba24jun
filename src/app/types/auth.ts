@@ -74,21 +74,19 @@ export type Permission =
   // src/app/types/auth.ts
   export interface AuthUser {
     uid: string;
-    email: string | null;
-    displayName: string | null;
-    role: UserRole;
-    permissions: Permission[];
-    status: 'active' | 'inactive' | 'pending';
-    metadata?: {
-      company?: string;
-      position?: string;
-      phone?: string;
-      dateJoined?: string;
-      lastLogin?: string;
-    };
-    createdAt: string;
-    updatedAt: string;
-  }
+ email: string | null; 
+ displayName: string | null;
+ role: UserRole;
+ permissions: Permission[];
+ status: 'active' | 'inactive' | 'pending';
+ createdAt: string;
+ updatedAt: string;
+ metadata?: {
+   company?: string;
+   position?: string;
+   phone?: string;
+ };
+}
   
   
   

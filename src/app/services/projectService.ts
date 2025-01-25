@@ -23,7 +23,12 @@ import type {
   ProjectStatus,
 } from '@/app/types/project';
 
-// Error personalizado para el servicio
+interface Deliverable {
+  id: string;
+  status: 'pending' | 'in_progress' | 'completed';
+  [key: string]: unknown;
+}
+
 // Clase de error personalizada
 export class ProjectServiceError extends Error {
   constructor(
@@ -99,6 +104,42 @@ class ProjectService {
     );
   }
 }
+
+async updateDeliverableStatus(
+  projectId: string,
+  deliverableId: string,
+  status: Deliverable['status']
+): Promise<void> {
+  const projectRef = doc(this.projectsCollection, projectId);
+  const project = await getDoc(projectRef);
+  
+  if (!project.exists()) {
+    throw new ProjectServiceError('Project not found', 'NOT_FOUND');
+  }
+
+  const projectData = project.data();
+  const deliverables = projectData.deliverables as Deliverable[] || [];
+  const updatedDeliverables = deliverables.map((d: Deliverable) => 
+    d.id === deliverableId ? { ...d, status } : d
+  );
+
+  await updateDoc(projectRef, {
+    deliverables: updatedDeliverables,
+    updatedAt: Timestamp.now()
+  });
+}
+
+
+async getProjectStats(userId: string) {
+  const projects = await this.getUserProjects(userId);
+  return {
+    total: projects.length,
+    active: projects.filter(p => p.status === 'in_progress').length,
+    completed: projects.filter(p => p.status === 'completed').length
+  };
+}
+
+
   // Obtener un proyecto por ID
   async getProject(projectId: string): Promise<Project | null> {
     try {
@@ -195,6 +236,8 @@ class ProjectService {
     }
   }
 
+  
+
   // Agregar miembro al equipo
   async addTeamMember(
     projectId: string,
@@ -256,6 +299,8 @@ class ProjectService {
   }
 }
 
+   
+
 export async function createTestProject(userId: string) {
   try {
     const projectsRef = collection(db, 'projects');
@@ -263,11 +308,13 @@ export async function createTestProject(userId: string) {
     const projectData = {
       name: "Proyecto Test",
       type: "design",
-      status: "in_progress", 
+      status: "draft",
       description: "Proyecto de prueba",
       clientId: userId,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
+      startDate: Timestamp.now(),
+      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 días
       brief: {
         approved: false,
         content: {},
@@ -284,15 +331,21 @@ export async function createTestProject(userId: string) {
         healthStatus: "on-track"
       }
     };
- 
+
     const docRef = await addDoc(projectsRef, projectData);
+    console.log('Proyecto creado con ID:', docRef.id);
     return docRef.id;
- 
+
   } catch (error) {
-    console.error('Error creating test project:', error);
-    throw error;
+    console.error('Error al crear proyecto:', error);
+    throw new ProjectServiceError(
+      'Error al crear proyecto de prueba',
+      'UNKNOWN',
+      error
+    );
   }
- }
+}
+
  
 
 export const projectService = new ProjectService();

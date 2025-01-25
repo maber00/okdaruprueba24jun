@@ -1,12 +1,11 @@
 // src/app/core/auth/context/AuthContext.tsx
 'use client';
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { initializeFirebase, getFirebaseInstances } from '@/app/lib/firebase/init';
+import { doc, onSnapshot, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '@/app/lib/firebase';
 import type { AuthUser } from '@/app/types/auth';
-import { authLogger } from '@/app/lib/logger';
-
+import { useToast } from '@/app/shared/hooks/useToast';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -15,92 +14,123 @@ interface AuthContextType {
   error: string | null;
 }
 
-export const AuthContext = createContext<AuthContextType>({
+const initialState: AuthContextType = {
   user: null,
   firebaseUser: null,
   loading: true,
   error: null
-});
+};
 
+export const AuthContext = createContext<AuthContextType>(initialState);
 
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [state, setState] = useState<AuthContextType>(initialState);
+  const { toast } = useToast();
 
   useEffect(() => {
-    const initializeAuth = async () => {
+    let userDataUnsubscribe: (() => void) | undefined;
+
+    const authUnsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       try {
-        await initializeFirebase();
-        const { auth, db } = getFirebaseInstances();
+        if (fbUser) {
+          // Get user token for API requests
+          const token = await fbUser.getIdToken();
+          document.cookie = `firebase-token=${token}; path=/; max-age=3600; secure; samesite=strict`;
 
-        const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
-          try {
-            setLoading(true);
-            authLogger.info('AuthProvider', 'Cambio en estado de autenticación', 
-              fbUser ? `Usuario: ${fbUser.uid}` : 'Usuario: null');
+          const userDocRef = doc(db, 'users', fbUser.uid);
+          const userDoc = await getDoc(userDocRef);
 
-            if (fbUser) {
-              setFirebaseUser(fbUser);
-              const userDocRef = doc(db, 'users', fbUser.uid);
-              
-              const userDocSnap = await getDoc(userDocRef);
-              
-              if (!userDocSnap.exists()) {
-                const newUser: AuthUser = {
-                  uid: fbUser.uid,
-                  email: fbUser.email,
-                  displayName: fbUser.displayName,
-                  role: 'client',
-                  permissions: [],
-                  status: 'active',
-                  metadata: {},
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString()
-                };
-                
-                setUser(newUser);
-              } else {
-                setUser(userDocSnap.data() as AuthUser);
+          if (!userDoc.exists()) {
+            // Create new user document
+            const userData = {
+              email: fbUser.email,
+              displayName: fbUser.displayName,
+              role: 'client',
+              permissions: [],
+              createdAt: new Date(),
+              updatedAt: new Date()
+            };
+
+            await setDoc(userDocRef, userData);
+            setState({
+              user: {
+                uid: fbUser.uid,
+                email: fbUser.email,
+                displayName: fbUser.displayName,
+                role: 'client',
+                permissions: []
+              },
+              firebaseUser: fbUser,
+              loading: false,
+              error: null
+            });
+          } else {
+            // Subscribe to user document changes
+            userDataUnsubscribe = onSnapshot(userDocRef, 
+              (doc) => {
+                if (doc.exists()) {
+                  const userData = doc.data();
+                  setState({
+                    user: {
+                      uid: fbUser.uid,
+                      email: fbUser.email,
+                      displayName: fbUser.displayName,
+                      role: userData.role,
+                      permissions: userData.permissions || []
+                    },
+                    firebaseUser: fbUser,
+                    loading: false,
+                    error: null
+                  });
+                }
+              },
+              (error) => {
+                console.error('Error in user document snapshot:', error);
+                toast({
+                  message: 'Error al sincronizar datos del usuario'
+                });
               }
-              setError(null);
-            } else {
-              setFirebaseUser(null);
-              setUser(null);
-              setError(null);
-            }
-          } catch (err) {
-            authLogger.error('AuthProvider', 'Error en autenticación', err);
-            setError('Error en autenticación');
-          } finally {
-            setLoading(false);
+            );
           }
+        } else {
+          // User is signed out
+          if (userDataUnsubscribe) {
+            userDataUnsubscribe();
+          }
+          document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+          setState(initialState);
+        }
+      } catch (error) {
+        console.error('Error in auth state change:', error);
+        setState(prev => ({
+          ...prev,
+          loading: false,
+          error: 'Error al autenticar usuario'
+        }));
+        toast({
+          message: 'Error de autenticación'
         });
+      }
+    });
 
-        return () => unsubscribe();
-      } catch (err) {
-        authLogger.error('AuthProvider', 'Error inicializando Firebase', err);
-        setError('Error inicializando autenticación');
-        setLoading(false);
+    return () => {
+      authUnsubscribe();
+      if (userDataUnsubscribe) {
+        userDataUnsubscribe();
       }
     };
-
-    initializeAuth();
-  }, []);
+  }, [toast]);
 
   return (
-    <AuthContext.Provider value={{ user, firebaseUser, loading, error }}>
+    <AuthContext.Provider value={state}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth debe ser usado dentro de un AuthProvider');
   }
   return context;
