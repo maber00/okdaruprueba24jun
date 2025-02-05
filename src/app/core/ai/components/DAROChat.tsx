@@ -1,13 +1,13 @@
-// src/app/core/ai/components/DAROChat.tsx
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/app/core/auth/hooks/useAuth';
+import { useToast } from '@/app/shared/hooks/useToast';
 import NextImage from 'next/image';
-import { type BriefData } from '@/app/types/brief';
-import ReactMarkdown from 'react-markdown';
-import ChatInput from '@/app/core/ai/components/ChatInput';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '@/app/lib/firebase';
+import { auth, storage } from '@/app/lib/firebase';
+import { type BriefData } from '@/app/types/brief';
+import { ImagePlus, X, Loader } from 'lucide-react';
+import Button from '@/app/shared/components/ui/Button';
 
 interface Message {
   id: string;
@@ -26,13 +26,12 @@ interface DAROChatProps {
 }
 
 export default function DAROChat({ onBriefComplete }: DAROChatProps) {
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [pendingReferences, setPendingReferences] = useState<Message['references']>([]);
-  const [briefData] = useState<BriefData | null>(null); 
-  const { user } = useAuth();
-  const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -45,22 +44,93 @@ export default function DAROChat({ onBriefComplete }: DAROChatProps) {
     }
   }, [messages.length]);
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim() && !pendingReferences?.length) return;
-    
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: inputMessage,
-      references: pendingReferences || [],
-      timestamp: new Date()
-    };
-  
+  const uploadImageToStorage = async (file: File): Promise<string | null> => {
     try {
+      // Verificar autenticación
+      if (!auth.currentUser) {
+        throw new Error('No autenticado');
+      }
+
+      // Crear una referencia segura al archivo
+      const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+      const storageRef = ref(storage, `images/${auth.currentUser.uid}/${fileName}`);
+
+      // Subir el archivo
+      const snapshot = await uploadBytes(storageRef, file);
+      console.log('Archivo subido correctamente:', snapshot);
+
+      // Obtener URL de descarga
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log('URL de descarga obtenida:', downloadURL);
+
+      return downloadURL;
+    } catch (error) {
+      console.error('Error en uploadImageToStorage:', error);
+      if (error instanceof Error) {
+        toast({ message: error.message });
+      }
+      return null;
+    }
+  };
+
+  const handleUploadImages = async (files: File[]) => {
+    if (!user) {
+      toast({ message: 'Debes iniciar sesión para subir archivos' });
+      return;
+    }
+
+    setIsLoading(true);
+    const maxFiles = 5;
+
+    try {
+      if ((pendingReferences?.length || 0) + files.length > maxFiles) {
+        toast({ message: `Máximo ${maxFiles} archivos permitidos` });
+        return;
+      }
+
+      const newReferences = await Promise.all(
+        files.map(async (file) => {
+          const url = await uploadImageToStorage(file);
+          if (!url) return null;
+          return {
+            url,
+            fileName: file.name
+          };
+        })
+      );
+
+      const validReferences = newReferences.filter((ref): ref is NonNullable<typeof ref> => ref !== null);
+
+      if (validReferences.length > 0) {
+        setPendingReferences(prev => [...(prev || []), ...validReferences]);
+        toast({ message: 'Archivos subidos correctamente' });
+      }
+    } catch (error) {
+      console.error('Error en handleUploadImages:', error);
+      toast({ message: 'Error al subir los archivos' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() && (!pendingReferences || pendingReferences.length === 0)) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const newMessage: Message = {
+        id: Date.now().toString(),
+        role: 'user',
+        content: inputMessage,
+        references: pendingReferences,
+        timestamp: new Date()
+      };
+
       setMessages(prev => [...prev, newMessage]);
       setInputMessage('');
       setPendingReferences([]);
-      setIsLoading(true);
 
       const response = await fetch('/api/openai/chat', {
         method: 'POST',
@@ -68,93 +138,39 @@ export default function DAROChat({ onBriefComplete }: DAROChatProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: messages.concat(newMessage),
-        })
+          messages: messages.concat(newMessage)
+        }),
       });
-  
+
       const data = await response.json();
-      
+
       if (data.success) {
         const content = data.content;
-        
-        if (briefData) {
-          setMessages(prev => [...prev, {
-            id: Date.now().toString(),
-            role: 'assistant',
-            content: content,
-            timestamp: new Date()
-          }]);
-        } else if (content.includes('BRIEF_COMPLETADO|')) {
+        if (content.includes('BRIEF_COMPLETADO|')) {
           const [messageContent, briefContent] = content.split('BRIEF_COMPLETADO|');
-          try {
-            const briefJson = briefContent
-              .split('\n')[0]
-              .trim()
-              .replace(/[\r\n]/g, '')
-              .replace(/\s+/g, ' ')
-              .replace(/\\/g, '\\\\')
-              .replace(/`/g, '');
-
-            console.log('JSON a parsear:', briefJson);
-            
-            const parsedBriefData = JSON.parse(briefJson);
-            onBriefComplete(parsedBriefData);
-            
-            if (messageContent.trim()) {
-              setMessages(prev => [...prev, {
-                id: Date.now().toString(),
-                role: 'assistant',
-                content: messageContent.trim(),
-                timestamp: new Date()
-              }]);
-            }
-          } catch (error) {
-            console.error('Error parsing brief:', error);
-            console.error('JSON problemático:', briefContent);
+          const briefData = JSON.parse(briefContent);
+          onBriefComplete(briefData);
+          
+          if (messageContent.trim()) {
+            setMessages(prev => [...prev, {
+              id: Date.now().toString(),
+              role: 'assistant',
+              content: messageContent.trim(),
+              timestamp: new Date()
+            }]);
           }
         } else {
           setMessages(prev => [...prev, {
             id: Date.now().toString(),
             role: 'assistant',
-            content: content,
+            content,
             timestamp: new Date()
           }]);
         }
       }
     } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleUploadImages = async (files: File[]) => {
-    if (!user) return;
-    
-    const maxFiles = 5;
-    if (pendingReferences && pendingReferences.length + files.length > maxFiles) {
-      alert(`Máximo ${maxFiles} imágenes permitidas`);
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const newReferences = await Promise.all(files.map(async (file) => {
-        const path = `references/${user.uid}/${Date.now()}-${file.name}`;
-        const storageRef = ref(storage, path);
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
-        return {
-          url,
-          fileName: file.name
-        };
-      }));
-
-      setPendingReferences(prev => [...(prev || []), ...newReferences]);
-    } catch (error) {
-      console.error('Error uploading files:', error);
-      alert('Error al subir las imágenes');
+      console.error('Error en handleSendMessage:', error);
+      toast({ message: 'Error al enviar el mensaje' });
     } finally {
       setIsLoading(false);
     }
@@ -162,31 +178,18 @@ export default function DAROChat({ onBriefComplete }: DAROChatProps) {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      {/* Área de mensajes */}
       <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4">
         <div className="max-w-4xl mx-auto space-y-6">
           {messages.map((message) => (
-            <div 
-              key={message.id} 
+            <div
+              key={message.id}
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div className={`max-w-[85%] rounded-lg p-6 ${
                 message.role === 'user' ? 'bg-gray-200' : 'bg-white shadow-sm'
               }`}>
-                <ReactMarkdown 
-                  className="text-gray-800 prose prose-sm max-w-none"
-                  components={{
-                    h3: ({...props}) => <h3 className="text-lg font-bold mb-4 mt-6" {...props} />,
-                    strong: ({...props}) => <span className="font-semibold text-gray-900" {...props} />,
-                    p: ({...props}) => <p className="mb-4 whitespace-pre-wrap leading-relaxed" {...props} />,
-                    ul: ({...props}) => <ul className="list-disc pl-4 mb-4 space-y-2" {...props} />,
-                    li: ({...props}) => <li className="mb-1" {...props} />
-                  }}
-                >
-                  {message.content}
-                </ReactMarkdown>
-                
-                {message.references && (
+                <div className="whitespace-pre-wrap">{message.content}</div>
+                {message.references && message.references.length > 0 && (
                   <div className="mt-4 grid grid-cols-2 gap-4">
                     {message.references.map((ref, idx) => (
                       <div key={idx} className="relative">
@@ -195,13 +198,8 @@ export default function DAROChat({ onBriefComplete }: DAROChatProps) {
                           alt={ref.fileName}
                           width={300}
                           height={200}
-                          className="rounded-lg object-cover shadow-sm"
+                          className="rounded-lg object-cover"
                         />
-                        {ref.analysis && (
-                          <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-                            {ref.analysis}
-                          </p>
-                        )}
                       </div>
                     ))}
                   </div>
@@ -209,25 +207,76 @@ export default function DAROChat({ onBriefComplete }: DAROChatProps) {
               </div>
             </div>
           ))}
-          <div ref={chatEndRef} className="h-4" />
         </div>
       </div>
 
-      {/* Área de input */}
-      <ChatInput
-      inputMessage={inputMessage}
-      isLoading={isLoading}
-      pendingReferences={pendingReferences}
-      onMessageChange={setInputMessage}
-      onSendMessage={handleSendMessage}
-      onUploadImages={handleUploadImages}
-      onRemoveImage={(index: number) => {
-        setPendingReferences(prev => 
-          (prev ?? []).filter((_, i) => i !== index)
-    );
-  }}
-/>
+      <div className="border-t bg-white p-4">
+        <div className="max-w-4xl mx-auto space-y-4">
+          <div className="flex items-center space-x-2">
+            <label className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 cursor-pointer">
+              <ImagePlus className="h-5 w-5" />
+              <span>Agregar referencia ({(pendingReferences || []).length}/5)</span>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files?.length) {
+                    handleUploadImages(Array.from(e.target.files));
+                  }
+                }}
+              />
+            </label>
+          </div>
 
+          {pendingReferences && pendingReferences.length > 0 && (
+            <div className="flex flex-wrap gap-3 p-3 bg-gray-50 rounded-lg">
+              {pendingReferences.map((ref, idx) => (
+                <div key={idx} className="relative group">
+                  <div className="w-20 h-20 relative">
+                    <NextImage
+                      src={ref.url}
+                      alt={ref.fileName}
+                      fill
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      setPendingReferences(prev => 
+                        prev ? prev.filter((_, i) => i !== idx) : []
+                      );
+                    }}
+                    className="absolute -top-2 -right-2 p-1.5 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex space-x-4">
+          <textarea
+            value={inputMessage}
+            onChange={(e) => onMessageChange(e.target.value)}
+            placeholder="Escribe un mensaje..."
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all"
+            disabled={isLoading}
+            suppressHydrationWarning // Add this prop
+          />
+
+
+            <Button
+              onClick={handleSendMessage}
+              disabled={isLoading || (!inputMessage.trim() && (!pendingReferences || pendingReferences.length === 0))}
+            >
+              {isLoading ? <Loader className="h-5 w-5 animate-spin" /> : 'Enviar'}
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

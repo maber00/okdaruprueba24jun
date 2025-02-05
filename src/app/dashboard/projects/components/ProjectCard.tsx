@@ -83,42 +83,38 @@ export function ProjectCard({ project, viewMode = 'grid', onClick }: ProjectCard
           </h3>
         </div>
         <div className="flex flex-wrap gap-2">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(project.status)}`}>
-            {project.status.replace('_', ' ').toUpperCase()}
-          </span>
-          {project.metadata.tags.slice(0, 2).map((tag) => (
-            <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-              <Tag className="h-3 w-3 mr-1" />
-              {tag}
-            </span>
-          ))}
+        <span className={`inline-flex items-center px-2.5 py-0.5 
+  rounded-full text-xs font-medium ${getStatusColor(project.status ?? 'draft')}`}
+>
+  {(project.status ?? 'draft').replace('_', ' ').toUpperCase()}
+</span>
         </div>
       </div>
       <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-        project.metadata.priority === 'high' ? 'bg-red-100 text-red-800' :
-        project.metadata.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-        'bg-green-100 text-green-800'
-      }`}>
-        {project.metadata.priority.toUpperCase()}
-      </span>
+  project.metadata?.priority === 'high' ? 'bg-red-100 text-red-800' :
+  project.metadata?.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+  'bg-green-100 text-green-800'
+}`}>
+  {project.metadata?.priority ? project.metadata.priority.toUpperCase() : 'LOW'}
+</span>
     </div>
   );
 
   const renderTeamAndProgress = () => (
     <div className="flex items-center justify-between pt-4 border-t">
       <div className="flex -space-x-2">
-        {project.team.slice(0, 3).map((member: ProjectMember) => (
+      {(project.team ?? []).slice(0, 3).map((member: ProjectMember) => (
           <Avatar
             key={member.id}
             alt={`${member.role} ${member.userId}`}
             size={32}
           />
         ))}
-        {project.team.length > 3 && (
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-xs font-medium text-gray-500">
-            +{project.team.length - 3}
-          </div>
-        )}
+        {(project.team?.length ?? 0) > 3 && (
+  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-xs font-medium text-gray-500">
+    +{(project.team?.length ?? 0) - 3}
+  </div>
+)}
       </div>
       <div className="flex items-center gap-2">
         {project.managerId ? (

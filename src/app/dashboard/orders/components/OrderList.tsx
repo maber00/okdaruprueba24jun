@@ -7,7 +7,7 @@ import TimeRemaining from '@/app/shared/components/ui/TimeRemaining';
 import PriorityBadge from '@/app/shared/components/ui/PriorityBadge';
 import OrderStatusBadge from './OrderStatusBadge';
 import OrderCard from './OrderCard';
-import { type Order } from '@/app/types/order';
+import type { Order } from '@/app/types/order';
 
 interface OrderListProps {
   orders: Order[];

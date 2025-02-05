@@ -1,4 +1,4 @@
-// src/app/(dashboard)/components/DashboardStats.tsx
+// src/app/dashboard/components/DashboardStats.tsx
 import { Card, CardContent } from '@/app/shared/components/ui/card';
 import { 
   BarChart,
@@ -36,9 +36,14 @@ const StatCard = ({ title, value, icon, trend }: StatCardProps) => (
   </Card>
 );
 
-export default function DashboardStats({ stats }: { stats: DashboardStats }) {
+interface DashboardStatsProps {
+  stats: DashboardStats;
+  className?: string;
+}
+
+export default function DashboardStats({ stats, className = '' }: DashboardStatsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}>
       <StatCard
         title="Proyectos Activos"
         value={stats.projects.active}

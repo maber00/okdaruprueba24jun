@@ -1,6 +1,5 @@
 // src/app/dashboard/projects/create/page.tsx
 'use client';
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/core/auth/hooks/useAuth';
@@ -8,7 +7,7 @@ import DAROChat from '@/app/core/ai/components/DAROChat';
 import BriefPanel from '@/app/core/ai/analysis/components/BriefPanel';
 import { projectService } from '@/app/services/projectService';
 import type { BriefData } from '@/app/types/brief';
-import { type Project, type ProjectType } from '@/app/types/project';
+import type { Project, ProjectType } from '@/app/types/project';
 
 export default function CreateProjectPage() {
   const router = useRouter();
@@ -30,28 +29,26 @@ export default function CreateProjectPage() {
           content: {
             objectives: [data.objective],
             targetAudience: data.targetAudience,
-            requirements: [], // Será un array de TechnicalRequirement
+            requirements: [],
             brandGuidelines: data.brandValues,
             references: [],
             technicalSpecs: {},
             additionalNotes: ''
           },
           updatedAt: new Date().toISOString(),
-          version: 1 // Añadimos versión inicial
+          version: 1
         },
         startDate: new Date().toISOString(),
         dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
       };
+      
   
       await projectService.createProject(projectData);
   
-      
-      // Mostrar el brief para revisión
       setBriefData(data);
       setShowBrief(true);
     } catch (error) {
       console.error('Error creating project:', error);
-      // TODO: Mostrar error al usuario
     }
   };
 

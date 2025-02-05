@@ -1,3 +1,4 @@
+// src/app/services/// src/app/services/projectService.ts
 import type { BriefData } from '@/app/types/brief';
 import type { AIAnalysis } from '@/app/types/project';
 import type { 

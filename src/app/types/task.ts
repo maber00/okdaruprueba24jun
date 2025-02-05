@@ -25,17 +25,24 @@ export interface Task {
   projectId: string;
   name: string;
   description: string;
-  status: TaskStatus;
-  priority: TaskPriority;
-  startTime: string;
-  endTime: string;
+  status: 'pending' | 'in_progress' | 'completed';
+  priority: 'high' | 'medium' | 'low';
+  startTime: Date | string;
+  endTime: Date | string;
   assignedTo: string[];
   createdBy: string;
   createdAt: string;
   updatedAt: string;
-  attachments?: Attachment[];  // Añadido
-  comments?: Comment[];        // Añadido
-  metadata?: {
+  attachments?: {
+    fileName: string;
+    fileUrl: string;
+    // ... otros campos del attachment
+  }[];
+  comments?: {
+    content: string;
+    createdAt: string;
+    // ... otros campos del comentario
+  }[];  metadata?: {
     estimatedHours?: number;
     actualHours?: number;
     dependencies?: string[];

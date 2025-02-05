@@ -1,5 +1,4 @@
 // src/app/dashboard/projects/components/ProjectTeam.tsx
-'use client';
 import { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/app/shared/components/ui/card';
 import Button from '@/app/shared/components/ui/Button';
@@ -17,38 +16,30 @@ import { useToast } from '@/app/shared/hooks/useToast';
 import type { ProjectMember } from '@/app/types/project';
 
 interface ProjectTeamProps {
-  team: ProjectMember[];
+  team?: ProjectMember[];
   projectId: string;
   canManageTeam: boolean;
 }
 
-interface AddMemberModal {
-  isOpen: boolean;
-  email: string;
-  role: ProjectMember['role'];
-}
-
 const ROLE_LABELS: Record<ProjectMember['role'], string> = {
-    project_manager: 'Project Manager',
-    designer: 'Diseñador',
-    client: 'Cliente'
-  };
-  
-  const ROLE_ICONS: Record<ProjectMember['role'], React.ReactNode> = {
-    project_manager: <UserCog className="h-4 w-4 text-blue-500" />,
-    designer: <UserPlus className="h-4 w-4 text-green-500" />,
-    client: <Mail className="h-4 w-4 text-gray-500" />
-  };
-  
-  
+  project_manager: 'Project Manager',
+  designer: 'Diseñador',
+  client: 'Cliente'
+};
 
-export function ProjectTeam({ team, projectId, canManageTeam }: ProjectTeamProps) {
+const ROLE_ICONS: Record<ProjectMember['role'], React.ReactNode> = {
+  project_manager: <UserCog className="h-4 w-4 text-blue-500" />,
+  designer: <UserPlus className="h-4 w-4 text-green-500" />,
+  client: <Mail className="h-4 w-4 text-gray-500" />
+};
+
+export function ProjectTeam({ team = [], projectId, canManageTeam }: ProjectTeamProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [addMemberModal, setAddMemberModal] = useState<AddMemberModal>({
+  const [addMemberModal, setAddMemberModal] = useState({
     isOpen: false,
     email: '',
-    role: 'designer'
+    role: 'designer' as ProjectMember['role']
   });
 
   const handleAddMember = async (email: string, role: ProjectMember['role']) => {
@@ -61,8 +52,7 @@ export function ProjectTeam({ team, projectId, canManageTeam }: ProjectTeamProps
 
     try {
       setIsLoading(true);
-      await projectService.addTeamMember(projectId, email, role, []);
-
+      await projectService.addTeamMember(projectId, email, role);
       toast({
         message: 'Miembro agregado exitosamente'
       });
@@ -77,20 +67,6 @@ export function ProjectTeam({ team, projectId, canManageTeam }: ProjectTeamProps
     }
   };
 
-  const handleRemoveMember = async (memberId: string) => {
-    try {
-      await projectService.removeTeamMember(projectId, memberId);
-      
-      toast({
-        message: 'Miembro removido exitosamente'
-      });
-    } catch (error) {
-      console.error('Error removing team member:', error);
-      toast({
-        message: 'Error al remover miembro'
-      });
-    }
-  };
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -110,15 +86,14 @@ export function ProjectTeam({ team, projectId, canManageTeam }: ProjectTeamProps
 
       <CardContent>
         <div className="space-y-4">
-          {/* Lista de Miembros */}
           {team.map((member) => (
             <div 
               key={member.id}
-              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+              className="relative flex items-center justify-between p-4 bg-gray-50 rounded-lg"
             >
               <div className="flex items-center gap-4">
                 <Avatar
-                  alt={`Team member ${member.id}`}
+                  alt={`Team member ${member.userId}`}
                   size={40}
                 />
                 <div>
@@ -131,23 +106,6 @@ export function ProjectTeam({ team, projectId, canManageTeam }: ProjectTeamProps
                   </div>
                 </div>
               </div>
-
-              {canManageTeam && (
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {}}
-                    className="p-2 hover:bg-gray-200 rounded-full"
-                  >
-                    <Settings className="h-4 w-4 text-gray-500" />
-                  </button>
-                  <button
-                    onClick={() => handleRemoveMember(member.id)}
-                    className="p-2 hover:bg-red-100 rounded-full"
-                  >
-                    <Trash className="h-4 w-4 text-red-500" />
-                  </button>
-                </div>
-              )}
             </div>
           ))}
 
@@ -158,7 +116,6 @@ export function ProjectTeam({ team, projectId, canManageTeam }: ProjectTeamProps
           )}
         </div>
 
-        {/* Modal para agregar miembro */}
         {addMemberModal.isOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -166,7 +123,7 @@ export function ProjectTeam({ team, projectId, canManageTeam }: ProjectTeamProps
                 <h3 className="text-lg font-medium">Agregar Miembro</h3>
                 <button
                   onClick={() => setAddMemberModal(prev => ({ ...prev, isOpen: false }))}
-                  className="p-2 hover:bg-gray-100 rounded-full"
+                  className="text-gray-400 hover:text-gray-600"
                 >
                   <X className="h-5 w-5" />
                 </button>

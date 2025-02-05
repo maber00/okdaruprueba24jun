@@ -1,195 +1,136 @@
-// src/app/types/auth.ts
+// src/types/auth.ts
+
+// 1. Definición de tipos base
 export type UserRole = 'admin' | 'project_manager' | 'designer' | 'client';
 
-export type Permission =
-  // Gestión de Órdenes/Proyectos
-  | 'create_order'
-  | 'edit_order'
-  | 'delete_order'
-  | 'view_orders'
-  | 'approve_orders'
-  
+export interface TeamMember {
+  id: string;
+  userId: string;
+  role: UserRole;  
+  specialties: string[];
+  availability: number;
+  projects: string[];
+  email: string;
+  displayName: string;
+  status: 'active' | 'inactive';
+}
 
-  // Gestión de Usuarios
-  | 'create_user'
-  | 'edit_user'
-  | 'delete_user'
-  | 'view_users'
-  | 'manage_users'
-  | 'assign_roles'
-  | 'manage_permissions'
+// 2. Definición de grupos de permisos por categoría
+export type ProjectPermission =
+  | 'view_projects'
+  | 'create_project'
+  | 'edit_project'
+  | 'delete_project'
+  | 'manage_team';
 
-  // Gestión de Tareas
-  | 'create_task'
-  | 'edit_task'
-  | 'delete_task'
-  | 'view_tasks'
-  | 'assign_tasks'
-  | 'complete_tasks'
-
-  // Calendario
-  | 'view_global_calendar'
-  | 'view_team_calendar'
-  | 'view_personal_calendar'
-  | 'view_project_calendar'
-  | 'manage_calendar_events'
-  | 'edit_personal_events'
-
-  // Entregables
-  | 'create_deliverable'
-  | 'edit_deliverable'
-  | 'delete_deliverable'
-  | 'view_deliverables'
-  | 'approve_deliverable'
-  | 'request_changes'
-  | 'upload_files'
-  | 'download_files'
-  | 'view_deliverable_history'
-  | 'manage_deliverable_status'
-
-  // Comentarios y Feedback
-  | 'create_comment'
-  | 'edit_comment'
-  | 'delete_comment'
-  | 'view_comments'
-  | 'provide_feedback'
-  | 'resolve_feedback'
-
-  // Analytics y Reportes
+export type AnalyticsPermission =
   | 'view_analytics'
   | 'view_reports'
-  | 'export_reports'
-  | 'manage_settings'
+  | 'export_reports';
 
-  // Brief y Checklist
-  | 'create_brief'
-  | 'edit_brief'
-  | 'approve_brief'
-  | 'view_brief'
-  | 'create_checklist'
-  | 'edit_checklist'
-  | 'complete_checklist_items'
-  | 'view_checklist';
+export type UserManagementPermission =
+  | 'manage_users'
+  | 'view_users'
+  | 'create_user'
+  | 'edit_user';
 
-  // src/app/types/auth.ts
-  export interface AuthUser {
-    uid: string;
- email: string | null; 
- displayName: string | null;
- role: UserRole;
- permissions: Permission[];
- status: 'active' | 'inactive' | 'pending';
- createdAt: string;
- updatedAt: string;
- metadata?: {
-   company?: string;
-   position?: string;
-   phone?: string;
- };
+export type TaskPermission =
+  | 'view_tasks'
+  | 'create_task'
+  | 'edit_task'
+  | 'complete_tasks';
+
+// 3. Unión de todos los tipos de permisos
+export type Permission = 
+  | 'view_projects'
+  | 'create_project'
+  | 'edit_project'
+  | 'delete_project'
+  | 'manage_team'
+  | ProjectPermission 
+  | AnalyticsPermission 
+  | UserManagementPermission 
+  | TaskPermission;
+
+// 4. Interface para usuario autenticado
+export interface AuthUser {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  role: UserRole;
+  permissions: Permission[];
+  status: 'active' | 'inactive' | 'pending';
+  createdAt: string;
+  updatedAt: string;
+  metadata?: {
+    company?: string;
+    position?: string;
+    phone?: string;
+    lastLogin?: string;
+  };
 }
-  
-  
-  
-   
 
-// src/app/core/auth/constants/permissions.ts
-export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
+// 5. Permisos por defecto (única definición)
+export const DEFAULT_PERMISSIONS: Record<UserRole, Permission[]> = {
   admin: [
-    // Gestión de Órdenes/Proyectos
-    'create_order', 'edit_order', 'delete_order', 'view_orders', 'approve_orders',
-    
-    // Gestión de Usuarios
-    'create_user', 'edit_user', 'delete_user', 'view_users', 'manage_users',
-    'assign_roles', 'manage_permissions',
-    
-    // Gestión de Tareas
-    'create_task', 'edit_task', 'delete_task', 'view_tasks', 'assign_tasks',
-    'complete_tasks',
-    
-    // Calendario
-    'view_global_calendar', 'view_team_calendar', 'view_personal_calendar',
-    'view_project_calendar', 'manage_calendar_events', 'edit_personal_events',
-    
-    // Entregables
-    'create_deliverable', 'edit_deliverable', 'delete_deliverable', 'view_deliverables',
-    'approve_deliverable', 'request_changes', 'upload_files', 'download_files',
-    'view_deliverable_history', 'manage_deliverable_status',
-    
-    // Comentarios y Feedback
-    'create_comment', 'edit_comment', 'delete_comment', 'view_comments',
-    'provide_feedback', 'resolve_feedback',
-    
-    // Analytics y Reportes
-    'view_analytics', 'view_reports', 'export_reports', 'manage_settings',
-    
-    // Brief y Checklist
-    'create_brief', 'edit_brief', 'approve_brief', 'view_brief',
-    'create_checklist', 'edit_checklist', 'complete_checklist_items', 'view_checklist'
+    // Permisos de proyecto
+    'view_projects',
+    'create_project',
+    'edit_project',
+    'delete_project',
+    'manage_team',
+    // Permisos de analytics
+    'view_analytics',
+    'view_reports',
+    'export_reports',
+    // Permisos de usuarios
+    'manage_users',
+    'view_users',
+    'create_user',
+    'edit_user',
+    // Permisos de tareas
+    'view_tasks',
+    'create_task',
+    'edit_task',
+    'complete_tasks'
   ],
-
   project_manager: [
-    // Gestión de Órdenes/Proyectos
-    'create_order', 'edit_order', 'view_orders', 'approve_orders',
-    
-    // Gestión de Tareas
-    'create_task', 'edit_task', 'view_tasks', 'assign_tasks', 'complete_tasks',
-    
-    // Calendario
-    'view_team_calendar', 'view_project_calendar', 'manage_calendar_events',
-    'edit_personal_events',
-    
-    // Entregables
-    'create_deliverable', 'edit_deliverable', 'view_deliverables',
-    'approve_deliverable', 'upload_files', 'download_files',
-    'view_deliverable_history', 'manage_deliverable_status',
-    
-    // Comentarios y Feedback
-    'create_comment', 'edit_comment', 'view_comments',
-    'provide_feedback', 'resolve_feedback',
-    
-    // Analytics y Reportes
-    'view_analytics', 'view_reports',
-    
-    // Brief y Checklist
-    'create_brief', 'edit_brief', 'approve_brief', 'view_brief',
-    'create_checklist', 'edit_checklist', 'complete_checklist_items', 'view_checklist'
+    'view_projects',
+    'edit_project',
+    'manage_team',
+    'view_analytics',
+    'view_reports',
+    'view_tasks',
+    'create_task',
+    'edit_task'
   ],
-
   designer: [
-    // Gestión de Órdenes/Proyectos
-    'view_orders', 'edit_order',
-    
-    // Gestión de Tareas
-    'view_tasks', 'complete_tasks',
-    
-    // Calendario
-    'view_personal_calendar', 'edit_personal_events',
-    
-    // Entregables
-    'create_deliverable', 'view_deliverables', 'upload_files', 'download_files',
-    'view_deliverable_history',
-    
-    // Comentarios y Feedback
-    'create_comment', 'view_comments', 'provide_feedback',
-    
-    // Brief y Checklist
-    'view_brief', 'view_checklist', 'complete_checklist_items'
+    'view_projects',
+    'edit_project',
+    'view_tasks',
+    'complete_tasks'
   ],
-
   client: [
-    // Gestión de Órdenes/Proyectos
-    'create_order', 'view_orders',
-    
-    // Calendario
-    'view_project_calendar',
-    
-    // Entregables
-    'view_deliverables', 'download_files', 'request_changes',
-    
-    // Comentarios y Feedback
-    'create_comment', 'view_comments', 'provide_feedback',
-    
-    // Brief y Checklist
-    'view_brief', 'approve_brief', 'view_checklist'
+    'view_projects',
+    'create_project',
+    'view_reports',
+    'view_tasks'
   ]
-} as const;
+};
+
+// 6. Helper functions
+export const hasPermission = (
+  userPermissions: Permission[], 
+  requiredPermission: Permission
+): boolean => {
+  return userPermissions.includes(requiredPermission);
+};
+
+export const hasRole = (
+  userRole: UserRole,
+  requiredRole: UserRole | UserRole[]
+): boolean => {
+  return Array.isArray(requiredRole) 
+    ? requiredRole.includes(userRole)
+    : userRole === requiredRole;
+};

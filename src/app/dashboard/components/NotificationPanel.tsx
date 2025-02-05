@@ -1,3 +1,4 @@
+// src/app/dashboard/components/notificationService.ts
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardContent } from '@/app/shared/components/ui/card';
 import { Bell } from 'lucide-react';

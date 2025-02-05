@@ -1,41 +1,28 @@
-// src/app/dashboard/projects/components/ProjectBrief.tsx
 'use client';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
+import { Edit2, CheckSquare, Brain, Users, FileText, Calendar, AlertCircle, Target } from 'lucide-react';
+import type { BriefContent, TechnicalRequirement } from '@/app/types/project';
 import { Card, CardHeader, CardContent } from '@/app/shared/components/ui/card';
 import Button from '@/app/shared/components/ui/Button';
 import { useToast } from '@/app/shared/hooks/useToast';
 import { projectService } from '@/app/services/projectService';
-import { 
-  Edit2, 
-  CheckSquare, 
-  Brain,
-  FileText,
-  Users,
-  Target,
-  Calendar,
-  AlertCircle
-} from 'lucide-react';
-import { 
-    BriefContent, 
-    TechnicalRequirement 
-  } from '@/app/types/project';
+
+// Carga dinámica para mejorar rendimiento
+const DynamicButton = dynamic(() => import('@/app/shared/components/ui/Button'));
 
 interface ProjectBriefProps {
-    brief: {
-      content: BriefContent;
-      approved: boolean;
-      updatedAt: string;
-      version: number;
-    };
-    projectId: string;
-    canEdit: boolean;
-  }
-  
-  
-  
-  
+  brief: {
+    content: BriefContent;
+    approved: boolean;
+    updatedAt: string;
+    version: number;
+  };
+  projectId: string;
+  canEdit: boolean;
+}
 
-export function ProjectBrief({ brief, projectId, canEdit }: ProjectBriefProps) {
+export default function ProjectBrief({ brief, projectId, canEdit }: ProjectBriefProps) {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -127,7 +114,7 @@ export function ProjectBrief({ brief, projectId, canEdit }: ProjectBriefProps) {
       ) : (
         isEditing ? (
           <textarea
-            value={content}
+            value={content as string}
             onChange={(e) => setEditedBrief(prev => ({
               ...prev,
               [title.toLowerCase()]: e.target.value
@@ -141,12 +128,9 @@ export function ProjectBrief({ brief, projectId, canEdit }: ProjectBriefProps) {
       )}
     </div>
   );
-  
-  
-  
-  const technicalSpecsArray = Object.entries(editedBrief.technicalSpecs)
-  .map(([key, value]) => `${key}: ${value}`);
 
+  const technicalSpecsArray = Object.entries(editedBrief.technicalSpecs)
+    .map(([key, value]) => `${key}: ${value}`);
 
   return (
     <Card>
@@ -160,12 +144,12 @@ export function ProjectBrief({ brief, projectId, canEdit }: ProjectBriefProps) {
         {canEdit && (
           <div className="flex items-center gap-2">
             {!brief.approved && (
-              <Button variant="outline">
+              <DynamicButton variant="outline">
                 <CheckSquare className="h-4 w-4 mr-2" />
                 Aprobar Brief
-              </Button>
+              </DynamicButton>
             )}
-            <Button
+            <DynamicButton
               variant={isEditing ? 'primary' : 'outline'}
               onClick={() => isEditing ? handleSave() : setIsEditing(true)}
               isLoading={isSubmitting}
@@ -178,16 +162,13 @@ export function ProjectBrief({ brief, projectId, canEdit }: ProjectBriefProps) {
                   Editar Brief
                 </>
               )}
-            </Button>
+            </DynamicButton>
           </div>
         )}
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* Estado de aprobación */}
-        <div className={`p-4 rounded-lg ${
-          brief.approved ? 'bg-green-50' : 'bg-yellow-50'
-        }`}>
+        <div className={`p-4 rounded-lg ${brief.approved ? 'bg-green-50' : 'bg-yellow-50'}`}>
           <div className="flex items-center gap-2">
             {brief.approved ? (
               <CheckSquare className="h-5 w-5 text-green-500" />
@@ -207,49 +188,13 @@ export function ProjectBrief({ brief, projectId, canEdit }: ProjectBriefProps) {
           </div>
         </div>
 
-        {/* Secciones del Brief */}
         <div className="space-y-6">
-          <BriefSection 
-            title="Objetivos" 
-            content={editedBrief.objectives} 
-          />
-          <BriefSection 
-            title="Audiencia" 
-            content={editedBrief.targetAudience} 
-          />
-          <BriefSection 
-            title="Requerimientos" 
-            content={editedBrief.requirements.map(req => 
-                typeof req === 'string' ? req : req.name
-            )} 
-            />
-
-          
-          <BriefSection 
-            title="Especificaciones" 
-            content={technicalSpecsArray} 
-          />
-          {editedBrief.additionalNotes && (
-            <BriefSection 
-              title="Notas Adicionales" 
-              content={editedBrief.additionalNotes} 
-            />
-          )}
+          <BriefSection title="Objetivos" content={editedBrief.objectives} />
+          <BriefSection title="Audiencia" content={editedBrief.targetAudience} />
+          <BriefSection title="Requerimientos" content={editedBrief.requirements.map(req => typeof req === 'string' ? req : req.name)} />
+          <BriefSection title="Especificaciones" content={technicalSpecsArray} />
+          {editedBrief.additionalNotes && <BriefSection title="Notas Adicionales" content={editedBrief.additionalNotes} />}
         </div>
-
-        {/* Referencias */}
-        {brief.content.references?.length > 0 && (
-          <div>
-            <h4 className="font-medium mb-3">Referencias</h4>
-            <div className="grid grid-cols-2 gap-4">
-              {brief.content.references.map((ref, index) => (
-                <div key={index} className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-sm font-medium">{ref}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

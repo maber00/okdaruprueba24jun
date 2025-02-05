@@ -33,3 +33,9 @@ export function getFirebaseInstances() {
     storage: storage as FirebaseStorage
   } : initializeFirebase();
  }
+ if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  storage = getStorage(app);
+}

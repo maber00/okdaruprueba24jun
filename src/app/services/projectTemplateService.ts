@@ -2,7 +2,7 @@ import type { ProjectType } from '@/app/types/project';
 import type { BriefData } from '@/app/types/brief';
 import type { ProjectTemplate, Milestone } from '@/app/types/estimation';
 
-export class ProjectTemplateService {
+class ProjectTemplateService {
   // Plantillas predefinidas por tipo de proyecto
   private readonly templates: Record<ProjectType, ProjectTemplate> = {
     design: {
@@ -59,7 +59,7 @@ export class ProjectTemplateService {
       defaultSteps: [
         'Brief y conceptualización',
         'Storyboard',
-        'Diseño de personajes/elementos',
+        'Diseño de elementos',
         'Animación',
         'Revisión del cliente',
         'Ajustes',
@@ -185,13 +185,6 @@ export class ProjectTemplateService {
           description: 'Validación de estructura y UX',
           dueDate: new Date(),
           dependencies: []
-        },
-        {
-          id: 'webdes-m2',
-          title: 'Revisión de UI',
-          description: 'Revisión del diseño visual',
-          dueDate: new Date(),
-          dependencies: ['webdes-m1']
         }
       ],
       web_development: [
@@ -201,13 +194,6 @@ export class ProjectTemplateService {
           description: 'Validación de la arquitectura técnica',
           dueDate: new Date(),
           dependencies: []
-        },
-        {
-          id: 'webdev-m2',
-          title: 'Revisión de Desarrollo',
-          description: 'Revisión de funcionalidades principales',
-          dueDate: new Date(),
-          dependencies: ['webdev-m1']
         }
       ]
     };
@@ -233,7 +219,6 @@ export class ProjectTemplateService {
     briefData: BriefData
   ): Promise<ProjectTemplate> {
     try {
-      // Ajustar el template según el brief
       const customizedTemplate = {
         ...template,
         estimatedDuration: this.adjustDuration(template.estimatedDuration, briefData),
@@ -249,10 +234,8 @@ export class ProjectTemplateService {
   }
 
   private adjustDuration(baseDuration: number, brief: BriefData): number {
-    // Ajustar duración según complejidad y alcance
     let durationFactor = 1;
     
-    // Ajuste por cantidad de entregables
     if (brief.technicalRequirements) {
       durationFactor *= 1 + (brief.technicalRequirements.length * 0.1);
     }
@@ -261,10 +244,8 @@ export class ProjectTemplateService {
   }
 
   private adjustBudget(baseBudget: ProjectTemplate['defaultBudget'], brief: BriefData) {
-    // Ajustar presupuesto según requerimientos
     let budgetFactor = 1;
     
-    // Ajuste por plataformas
     if (brief.platforms) {
       const platformCount = brief.platforms.split(',').length;
       budgetFactor *= 1 + (platformCount * 0.15);
@@ -281,7 +262,6 @@ export class ProjectTemplateService {
   }
 
   private adjustMilestones(baseMilestones: Milestone[], brief: BriefData): Milestone[] {
-    // Ajustar fechas de los hitos según la duración estimada
     return baseMilestones.map(milestone => ({
       ...milestone,
       dueDate: this.calculateMilestoneDueDate(milestone, brief)
@@ -289,7 +269,6 @@ export class ProjectTemplateService {
   }
 
   private calculateMilestoneDueDate(milestone: Milestone, brief: BriefData): Date {
-    // Calcular fecha basada en la posición del milestone en el timeline
     const today = new Date();
     const estimatedDays = this.adjustDuration(15, brief); // 15 días base
     const daysToAdd = Math.floor(estimatedDays * 0.5); // 50% del tiempo total

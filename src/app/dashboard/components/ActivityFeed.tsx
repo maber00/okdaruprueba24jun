@@ -1,4 +1,4 @@
-// src/app/(dashboard)/components/ActivityFeed.tsx
+// src/app/dashboard/components/ActivityFeed.tsx
 import { Card, CardHeader, CardContent } from '@/app/shared/components/ui/card';
 import { MessageSquare, RefreshCw, CheckCircle } from 'lucide-react';
 import Avatar from '@/app/shared/components/ui/Avatar';

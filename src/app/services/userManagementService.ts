@@ -1,7 +1,6 @@
 // src/app/services/userManagementService.ts
 import { ROLE_PERMISSIONS } from '@/app/lib/constants/permissions';
 import type { Permission } from '@/app/types/auth';
-
 import { 
     collection, 
     doc, 
@@ -19,6 +18,14 @@ import { db, auth } from '@/app/lib/firebase';
 import type { UserRole, AuthUser } from '@/app/types/auth';
 import { authLogger } from '@/app/lib/logger';
 
+export interface UserFilters {
+  role?: UserRole;
+  status?: 'active' | 'inactive' | 'pending';
+  searchTerm?: string;
+  sortBy?: string;
+  sortDirection?: 'asc' | 'desc';
+}
+
 export interface CreateUserDTO {
   email: string;
   password: string;
@@ -32,9 +39,11 @@ export interface CreateUserDTO {
 }
 
 class UserManagementService {
-    private usersCollection = collection(db, 'users');
+  private usersCollection = collection(db, 'users');
+
   
-    async createUser(userData: CreateUserDTO) {
+  async createUser(userData: CreateUserDTO) {
+
       try {
         const userCredential = await createUserWithEmailAndPassword(
           auth,
@@ -122,6 +131,8 @@ class UserManagementService {
       }
     }
 
+    
+
     async getUsersByRole(role: UserRole): Promise<AuthUser[]> {
       try {
         const querySnapshot = await getDocs(
@@ -139,6 +150,32 @@ class UserManagementService {
       }
     }
     
+    async getUsers(filters: UserFilters): Promise<AuthUser[]> {
+      try {
+        let q = query(this.usersCollection);
+  
+        if (filters.role) {
+          q = query(q, where('role', '==', filters.role));
+        }
+        if (filters.status) {
+          q = query(q, where('status', '==', filters.status));
+        }
+        if (filters.searchTerm) {
+          q = query(q, where('displayName', '>=', filters.searchTerm));
+        }
+  
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({
+          uid: doc.id,
+          ...doc.data(),
+        } as AuthUser));
+      } catch (error) {
+        authLogger.error('UserManagementService', 'Error getting users with filters', error);
+        throw error;
+      }
+    }
+    
+  
   
     // Método para actualizar último login
     async updateLastLogin(userId: string) {
@@ -155,4 +192,4 @@ class UserManagementService {
     }
   }
   
-export const userManagementService = new UserManagementService();
+  export const userManagementService = new UserManagementService();

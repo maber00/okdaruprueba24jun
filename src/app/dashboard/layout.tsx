@@ -1,6 +1,6 @@
 // src/app/dashboard/layout.tsx
-import Sidebar from '../shared/components/layout/Sidebar';
-import Header from '../shared/components/layout/Header';
+import Sidebar from '@/app/shared/components/layout/Sidebar';
+import Header from '@/app/shared/components/layout/Header';
 
 export default function DashboardLayout({
   children,

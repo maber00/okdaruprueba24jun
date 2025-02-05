@@ -1,15 +1,66 @@
 // src/app/api/admin/stats/route.ts
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { applyAdminMiddlewares } from '../routes/config';
 import { adminService } from '@/app/services/adminService';
+import { authLogger } from '@/app/lib/logger';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Verificar permisos
+    const middlewareResult = await applyAdminMiddlewares(request, 'stats');
+    if (middlewareResult) return middlewareResult;
+
+    // Obtener estadísticas
+    authLogger.info('admin-stats', 'Obteniendo estadísticas de usuario');
     const stats = await adminService.getUserStats();
-    return NextResponse.json(stats);
+
+    const projectStats = {
+      total: stats.total,
+      activeUsers: stats.activeUsers,
+      byRole: stats.byRole,
+      newUsersThisMonth: stats.newUsersThisMonth
+    };
+
+    authLogger.info('admin-stats', 'Estadísticas obtenidas exitosamente', projectStats);
+
+    return NextResponse.json({
+      success: true,
+      data: projectStats
+    });
+
   } catch (error) {
-    console.error('API Error:', error);
+    authLogger.error('admin-stats', 'Error al obtener estadísticas', error);
     return NextResponse.json(
-      { error: 'Failed to fetch user stats' },
+      { error: 'Error al obtener estadísticas' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    // Verificar permisos
+    const middlewareResult = await applyAdminMiddlewares(request, 'stats');
+    if (middlewareResult) return middlewareResult;
+
+    // Generar reporte
+    const { type, dateRange } = await request.json();
+
+    authLogger.info('admin-stats', 'Generando reporte', { type, dateRange });
+    const report = await adminService.generateReport(type, dateRange);
+
+    authLogger.info('admin-stats', 'Reporte generado exitosamente');
+
+    return NextResponse.json({
+      success: true,
+      data: report
+    });
+
+  } catch (error) {
+    authLogger.error('admin-stats', 'Error al generar reporte', error);
+    return NextResponse.json(
+      { error: 'Error al generar reporte' },
       { status: 500 }
     );
   }

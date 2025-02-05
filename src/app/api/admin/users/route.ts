@@ -1,32 +1,40 @@
-// src/app/api/admin/users/route.ts
-import { NextResponse } from 'next/server';
+//src/app/api/admin/users/route.ts
+import { NextResponse, NextRequest } from 'next/server';
+import { adminOnly, requirePermissions } from '@/app/middleware/withRoleCheck';
 import { adminService } from '@/app/services/adminService';
 import type { UserFilters, AdminUser } from '@/app/types/admin';
 import type { UserRole } from '@/app/types/auth';
 
-export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    
-    // Manejar correctamente los tipos null
-    const roleParam = searchParams.get('role');
-    const statusParam = searchParams.get('status');
-    const searchParam = searchParams.get('search');
-    const sortByParam = searchParams.get('sortBy');
-    const sortDirectionParam = searchParams.get('sortDirection');
+const adminUsersMiddleware = [
+  adminOnly,
+  requirePermissions(['manage_users'])
+];
 
+export async function GET(request: NextRequest) {
+  try {
+    // Validar permisos
+    for (const middleware of adminUsersMiddleware) {
+      const result = await middleware(request)
+      if (result instanceof NextResponse) {
+        return result
+      }
+    }
+
+    const { searchParams } = request.nextUrl;
+    
     const filters: UserFilters = {
-      role: roleParam as UserRole || undefined,
-      status: statusParam as AdminUser['status'] || undefined,
-      searchTerm: searchParam || undefined,
-      sortBy: sortByParam as keyof AdminUser || undefined,
-      sortDirection: (sortDirectionParam as 'asc' | 'desc') || undefined
+      role: searchParams.get('role') as UserRole || undefined,
+      status: searchParams.get('status') as AdminUser['status'] || undefined,
+      searchTerm: searchParams.get('search') || undefined,
+      sortBy: searchParams.get('sortBy') as keyof AdminUser || undefined,
+      sortDirection: (searchParams.get('sortDirection') as 'asc' | 'desc') || undefined
     };
 
     const page = parseInt(searchParams.get('page') || '1');
-
     const result = await adminService.getUsers(filters, page);
+    
     return NextResponse.json(result);
+    
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json(
@@ -36,8 +44,16 @@ export async function GET(request: Request) {
   }
 }
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
+    // Validar permisos
+    for (const middleware of adminUsersMiddleware) {
+      const result = await middleware(request)
+      if (result instanceof NextResponse) {
+        return result
+      }
+    }
+
     const { userId, updates } = await request.json();
     
     if (updates.role) {
@@ -49,6 +65,7 @@ export async function PATCH(request: Request) {
     }
 
     return NextResponse.json({ success: true });
+    
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json(
@@ -57,12 +74,21 @@ export async function PATCH(request: Request) {
     );
   }
 }
-
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   try {
+    // Validar permisos
+    for (const middleware of adminUsersMiddleware) {
+      const result = await middleware(request)
+      if (result instanceof NextResponse) {
+        return result
+      }
+    }
+
     const { userId } = await request.json();
     await adminService.deleteUser(userId);
+    
     return NextResponse.json({ success: true });
+    
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json(

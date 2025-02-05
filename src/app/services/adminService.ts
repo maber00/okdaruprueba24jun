@@ -15,6 +15,8 @@ import {
   import { db } from '@/app/lib/firebase';
   import type { AdminUser, UserFilters, UserStats } from '@/app/types/admin';
   import type { UserRole } from '@/app/types/auth';
+  import type { ReportData, UserDetail } from '@/app/types/reportData';
+
   
   const USERS_PER_PAGE = 10;
   
@@ -78,6 +80,61 @@ import {
         throw error;
       }
     }
+
+    async generateReport(type: string, dateRange: { start: Date; end: Date }): Promise<ReportData> {
+      try {
+        switch (type) {
+          case 'user_activity': {
+            // Simulación de datos
+            const users: UserDetail[] = [
+              { id: '1', name: 'John Doe', email: 'john@example.com', createdAt: '2023-01-01', status: 'active', role: 'admin' },
+              { id: '2', name: 'Jane Smith', email: 'jane@example.com', createdAt: '2023-01-10', status: 'inactive', role: 'client' },
+            ];
+    
+            const activeUsers = users.filter(user => user.status === 'active').length;
+            const newUsersThisMonth = users.filter(user => {
+              const createdAt = new Date(user.createdAt);
+              const startOfMonth = new Date(dateRange.start);
+              return createdAt >= startOfMonth && createdAt <= dateRange.end;
+            }).length;
+    
+            const byRole = users.reduce((acc, user) => {
+              acc[user.role] = (acc[user.role] || 0) + 1;
+              return acc;
+            }, {} as Record<string, number>);
+    
+            return {
+              type: 'user_activity',
+              totalUsers: users.length,
+              activeUsers,
+              newUsersThisMonth,
+              byRole,
+              details: users,
+            };
+          }
+    
+          case 'general_stats': {
+            // Simulación de estadísticas generales
+            return {
+              type: 'general_stats',
+              totalItems: 100,
+              stats: {
+                activeItems: 80,
+                archivedItems: 20,
+              },
+            };
+          }
+    
+          default:
+            throw new Error('Tipo de reporte no soportado');
+        }
+      } catch (error) {
+        console.error('Error generating report:', error);
+        throw error;
+      }
+    }
+    
+  
   
     async getUserStats(): Promise<UserStats> {
       try {

@@ -1,42 +1,72 @@
-// src/app/middleware/withRoleCheck.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import type { UserRole } from '@/app/types/auth';
+// src/middleware/withRoleCheck.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { authLogger } from '@/app/lib/logger'
+import type { UserRole, Permission } from '@/app/types/auth'
 
-export function withRoleCheck(allowedRoles: UserRole[]) {
+interface RoleCheckConfig {
+  requiredRoles?: UserRole[];
+  requiredPermissions?: Permission[];
+}
+
+export function withRoleCheck(config: RoleCheckConfig) {
   return async function middleware(request: NextRequest) {
     try {
-      const token = request.cookies.get('session')?.value;
+      // 1. Obtener role y permisos del header (establecidos en el middleware principal)
+      const userRole = request.headers.get('x-user-role') as UserRole | null
+      const userPermissions = request.headers.get('x-user-permissions')?.split(',') as Permission[] | undefined
 
-      if (!token) {
-        return NextResponse.redirect(new URL('/auth/login', request.url));
+      // 2. Verificar roles requeridos
+      if (config.requiredRoles?.length && userRole) {
+        if (!config.requiredRoles.includes(userRole)) {
+          authLogger.warn('roleCheck', 'Insufficient role', {
+            required: config.requiredRoles,
+            provided: userRole
+          })
+          
+          return NextResponse.json(
+            { error: 'No tienes los permisos necesarios' },
+            { status: 403 }
+          )
+        }
       }
 
-      // Verificar token a través de la API
-      const verifyResponse = await fetch(`${request.nextUrl.origin}/api/auth/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token })
-      });
+      // 3. Verificar permisos específicos
+      if (config.requiredPermissions?.length && userPermissions) {
+        const hasAllPermissions = config.requiredPermissions.every(
+          permission => userPermissions.includes(permission)
+        )
 
-      if (!verifyResponse.ok) {
-        return NextResponse.redirect(new URL('/auth/login', request.url));
+        if (!hasAllPermissions) {
+          authLogger.warn('roleCheck', 'Insufficient permissions', {
+            required: config.requiredPermissions,
+            provided: userPermissions
+          })
+
+          return NextResponse.json(
+            { error: 'No tienes los permisos necesarios' },
+            { status: 403 }
+          )
+        }
       }
 
-      const { uid } = await verifyResponse.json();
+      return NextResponse.next()
 
-      // Obtener rol del usuario
-      const userResponse = await fetch(`${request.nextUrl.origin}/api/users/${uid}`);
-      const userData = await userResponse.json();
-
-      if (!userData || !allowedRoles.includes(userData.role)) {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
-      }
-
-      return NextResponse.next();
     } catch (error) {
-      console.error('Role check error:', error);
-      return NextResponse.redirect(new URL('/auth/login', request.url));
+      authLogger.error('roleCheck', 'Error checking roles/permissions', error)
+      return NextResponse.json(
+        { error: 'Error al verificar permisos' },
+        { status: 500 }
+      )
     }
-  };
+  }
 }
+
+// Helper para proteger rutas admin
+export const adminOnly = withRoleCheck({ 
+  requiredRoles: ['admin']
+})
+
+// Helper para proteger rutas que requieren permisos específicos
+export const requirePermissions = (permissions: Permission[]) => 
+  withRoleCheck({ requiredPermissions: permissions })

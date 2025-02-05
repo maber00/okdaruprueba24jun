@@ -1,6 +1,10 @@
 // src/app/core/auth/services/authService.ts
 import { 
   signInWithEmailAndPassword, 
+  signInWithRedirect,
+  signInWithPopup,
+  GoogleAuthProvider,
+  getRedirectResult,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   updateProfile,
@@ -11,7 +15,6 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/app/lib/firebase';
 import type { UserRole } from '@/app/types/auth';
 import { authLogger } from '@/app/lib/logger';
-
 // Constantes para rutas
 const ROUTES = {
   LOGIN: '/auth/login',
@@ -167,5 +170,35 @@ export const authService = {
       authLogger.error('AuthService', 'Error obteniendo token', error);
       return null;
     }
-  }
+  },
+  async signInWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    try {
+      // Intentar primero con popup
+      return await signInWithPopup(auth, provider);
+    } catch (popupError) {
+      authLogger.warn('AuthService', 'Error en popup, intentando redirect', popupError);
+      // Si falla el popup, usar redirect como fallback
+      try {
+        await signInWithRedirect(auth, provider);
+      } catch (redirectError) {
+        authLogger.error('AuthService', 'Error en redirect auth', redirectError);
+        throw redirectError;
+      }
+    }
+  },
+
+  async handleRedirectResult() {
+    try {
+      const result = await getRedirectResult(auth);
+      if (result) {
+        // Procesar resultado del redirect
+        return result;
+      }
+      return null;
+    } catch (error) {
+      authLogger.error('AuthService', 'Error manejando resultado de redirect', error);
+      throw error;
+    }
+  },
 };

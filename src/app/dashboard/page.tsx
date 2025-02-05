@@ -1,249 +1,149 @@
-"use client";
-import { useState } from 'react';
+// src/app/dashboard/page.tsx
+'use client';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/core/auth/hooks/useAuth';
+import { projectService } from '@/app/services/projectService';
+import DashboardStats from './components/DashboardStats';
+import { Card, CardContent } from '@/app/shared/components/ui/card';
+import { useToast } from '@/app/shared/hooks/useToast';
+import Button from '@/app/shared/components/ui/Button';
 import { 
+  Plus, 
+  BarChart, 
   Clock, 
   CheckCircle, 
-  AlertCircle, 
-  MessageSquare, 
-  RefreshCw, 
-  PlusCircle
+  Users
 } from 'lucide-react';
-import Avatar from '@/app/shared/components/ui/Avatar';
 
-interface DashboardStats {
-  totalProjects: number;
-  activeProjects: number;
-  completedProjects: number;
-}
-
-interface RecentProject {
-  id: string;
+interface StatCardProps {
   title: string;
-  client: string;
-  status: 'pending' | 'in_progress' | 'completed';
-  dueDate: string;
-  formattedDueDate: string; // Nuevo campo preformateado
-  type: string;
+  value: number;
+  icon: React.ReactNode;
+  bgColor?: string;
 }
 
-interface Activity {
-  id: string;
-  user: {
-    name: string;
-    avatar?: string;
-  };
-  action: string;
-  target: string;
-  timestamp: string;
-  formattedTimestamp: string; // Nuevo campo preformateado
-  type: 'comment' | 'update' | 'create' | 'complete';
-}
+const StatCard = ({ title, value, icon, bgColor = 'bg-blue-50' }: StatCardProps) => (
+  <Card>
+    <CardContent className="p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-gray-500">{title}</p>
+          <p className="text-2xl font-bold">{value}</p>
+        </div>
+        <div className={`p-3 rounded-full ${bgColor}`}>
+          {icon}
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 export default function DashboardPage() {
-  const { user } = useAuth();
-
-  const [stats] = useState<DashboardStats>({
-    totalProjects: 25,
-    activeProjects: 10,
-    completedProjects: 15
+  const router = useRouter();
+  const { user, loading } = useAuth();
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    completed: 0,
+    inReview: 0
   });
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Preformateamos las fechas al inicializar el estado para evitar cálculos en tiempo de ejecución
-  const [recentProjects] = useState<RecentProject[]>([
-    {
-      id: '1',
-      title: 'Diseño volantes QR',
-      client: 'Marcela Baquero Studio',
-      status: 'in_progress',
-      dueDate: '2024-12-01',
-      formattedDueDate: new Date('2024-12-01').toLocaleDateString(),
-      type: 'design'
-    },
-    {
-      id: '2',
-      title: 'Desarrollo sitio web',
-      client: 'Convergence IO',
-      status: 'completed',
-      dueDate: '2024-11-30',
-      formattedDueDate: new Date('2024-11-30').toLocaleDateString(),
-      type: 'web_development'
-    },
-    {
-      id: '3',
-      title: 'Video publicitario',
-      client: 'Rockstars LATAM',
-      status: 'pending',
-      dueDate: '2024-12-15',
-      formattedDueDate: new Date('2024-12-15').toLocaleDateString(),
-      type: 'video'
-    }
-  ]);
+  useEffect(() => {
+    if (loading) return;
 
-  const [activities] = useState<Activity[]>([
-    {
-      id: '1',
-      user: {
-        name: 'Olivia López',
-      },
-      action: 'comentó en',
-      target: 'Diseño volantes QR',
-      timestamp: '2024-11-25T14:30:00',
-      formattedTimestamp: new Date('2024-11-25T14:30:00').toLocaleString(),
-      type: 'comment'
-    },
-    {
-      id: '2',
-      user: {
-        name: 'Jeff Martinez',
-      },
-      action: 'actualizó',
-      target: 'Video publicitario',
-      timestamp: '2024-11-25T13:15:00',
-      formattedTimestamp: new Date('2024-11-25T13:15:00').toLocaleString(),
-      type: 'update'
-    },
-    {
-      id: '3',
-      user: {
-        name: 'Samuel Santa',
-      },
-      action: 'completó',
-      target: 'Desarrollo sitio web',
-      timestamp: '2024-11-25T12:00:00',
-      formattedTimestamp: new Date('2024-11-25T12:00:00').toLocaleString(),
-      type: 'complete'
+    if (!user) {
+      router.replace('/auth/login');
+      return;
     }
-  ]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'text-green-500';
-      case 'in_progress':
-        return 'text-blue-500';
-      case 'pending':
-        return 'text-yellow-500';
-      default:
-        return 'text-gray-500';
-    }
-  };
+    const loadStats = async () => {
+      try {
+        const projectStats = await projectService.getProjectStats(user.uid);
+        setStats(projectStats);
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="h-5 w-5" />;
-      case 'in_progress':
-        return <Clock className="h-5 w-5" />;
-      case 'pending':
-        return <AlertCircle className="h-5 w-5" />;
-      default:
-        return null;
-    }
-  };
+    loadStats();
+  }, [user, loading, router]);
 
-  const getActivityIcon = (type: Activity['type']) => {
-    switch (type) {
-      case 'comment':
-        return <MessageSquare className="h-5 w-5 text-blue-500" />;
-      case 'update':
-        return <RefreshCw className="h-5 w-5 text-yellow-500" />;
-      case 'create':
-        return <PlusCircle className="h-5 w-5 text-green-500" />;
-      case 'complete':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
-      default:
-        return null;
-    }
-  };
+  if (loading || isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <span className="text-gray-500">
-          Bienvenido, {user?.displayName || user?.email}
-        </span>
+        <div>
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <p className="text-gray-600">
+            Bienvenido, {user.displayName || user.email}
+          </p>
+        </div>
+        <Button onClick={() => router.push('/dashboard/projects/create')}>
+          <Plus className="h-4 w-4 mr-2" />
+          Nuevo Proyecto
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm">Total Proyectos</h3>
-          <p className="text-3xl font-bold">{stats.totalProjects}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm">Proyectos Activos</h3>
-          <p className="text-3xl font-bold">{stats.activeProjects}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-gray-500 text-sm">Proyectos Completados</h3>
-          <p className="text-3xl font-bold">{stats.completedProjects}</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard
+          title="Proyectos Totales"
+          value={stats.total}
+          icon={<BarChart className="h-6 w-6 text-blue-500" />}
+          bgColor="bg-blue-50"
+        />
+        <StatCard
+          title="En Progreso"
+          value={stats.active}
+          icon={<Clock className="h-6 w-6 text-yellow-500" />}
+          bgColor="bg-yellow-50"
+        />
+        <StatCard
+          title="Completados"
+          value={stats.completed}
+          icon={<CheckCircle className="h-6 w-6 text-green-500" />}
+          bgColor="bg-green-50"
+        />
+        <StatCard
+          title="En Revisión"
+          value={stats.inReview}
+          icon={<Users className="h-6 w-6 text-purple-500" />}
+          bgColor="bg-purple-50"
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold">Proyectos Recientes</h2>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {recentProjects.map((project) => (
-              <div key={project.id} className="p-6 hover:bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className={getStatusColor(project.status)}>
-                      {getStatusIcon(project.status)}
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-medium">{project.title}</h3>
-                      <p className="text-sm text-gray-500">{project.client}</p>
-                    </div>
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    Vence: {project.formattedDueDate}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold">Actividad Reciente</h2>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {activities.map((activity) => (
-              <div key={activity.id} className="p-4 hover:bg-gray-50">
-                <div className="flex space-x-3">
-                  <div className="flex-shrink-0">
-                    <Avatar 
-                      src={activity.user.avatar}
-                      alt={activity.user.name}
-                      size={32}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center">
-                      {getActivityIcon(activity.type)}
-                      <div className="ml-2">
-                        <p className="text-sm text-gray-800">
-                          <span className="font-medium">{activity.user.name}</span>{' '}
-                          {activity.action}{' '}
-                          <span className="font-medium">{activity.target}</span>
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {activity.formattedTimestamp}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <DashboardStats stats={{
+        totalProjects: stats.total,
+        activeProjects: stats.active,
+        completedProjects: stats.completed,
+        projects: {
+          total: stats.total,
+          active: stats.active,
+          completed: stats.completed
+        },
+        clients: {
+          total: 0,
+          active: 0
+        },
+        revenue: {
+          total: 0,
+          monthly: 0,
+          growth: 0
+        }
+      }} />
     </div>
   );
 }

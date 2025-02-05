@@ -10,6 +10,7 @@ import {
 } from '@/app/types/brief';
 
 export default function BriefPanel({ data, onEdit, onConfirm }: BriefPanelProps) {
+  console.log('BriefPanel rendered with data:', data);
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'image':
